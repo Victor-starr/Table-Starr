@@ -4,9 +4,9 @@ import tableServices from "@/services/tableServices";
 export async function POST(req: NextRequest) {
   const tableData = await req.json();
   try {
-    const tableList = await tableServices.createTable(tableData);
+    const newTable = await tableServices.createTable(tableData);
     return Response.json(
-      { message: "Table created successfully", tableList },
+      { message: "Table created successfully", newTable },
       { status: 201 }
     );
   } catch (error) {

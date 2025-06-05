@@ -2,13 +2,13 @@ import { Schema, model, models } from "mongoose";
 
 const OrderSchema = new Schema({
   username: String,
-  item: String,
+  orderName: String,
   price: Number,
   timestamp: { type: Date, default: Date.now },
 });
 
 const TableSchema = new Schema({
-  tableId: { type: String, unique: true },
+  tableName: String,
   createdBy: String,
   orders: [OrderSchema],
   usersList: [String],
