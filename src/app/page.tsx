@@ -1,33 +1,39 @@
 "use client";
+import { Input, Button } from "pixel-retroui";
+import { useRouter } from "next/navigation";
 
-import axios from "axios";
+export default function HomeCreate() {
+  const router = useRouter();
+  const tableConnectionHandler = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
 
-export default function Home() {
-  const handleCreateTable = async () => {
-    const tableData = {
-      createdBy: "Victor",
-    };
-    try {
-      const res = await axios.post("/api/table/create", tableData);
-      console.log("table created successfully:", res.data.tableList);
-    } catch (error) {
-      console.error("Error creating table:", error);
-      alert("Failed to create table. Please try again.");
-    }
+    const username = e.currentTarget.username.value;
+    localStorage.setItem("username", username);
+    router.push("/tables-list");
   };
+
   return (
-    <main className="flex flex-col justify-between items-center p-24 min-h-screen">
-      <h1 className="mb-4 font-bold text-4xl">Welcome to Table Starr</h1>
-      <p className="mb-8 text-lg">
-        An application that allows users to keep track of their orders and how
-        the bill should be split.
-      </p>
-      <button
-        onClick={handleCreateTable}
-        className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded text-white transition"
+    <>
+      <h1 className="text-center">Table Starr ⭐</h1>
+      <form
+        onSubmit={tableConnectionHandler}
+        className="flex flex-col gap-4 py-5"
       >
-        Create Table
-      </button>
-    </main>
+        <Input
+          placeholder="Enter your username..."
+          name="username"
+          required
+          className="w-full"
+          type="text"
+        />
+        <div className="flex gap-2">
+          <Button type="submit" className="flex-1">
+            All Tables
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }

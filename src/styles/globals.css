@@ -9,7 +9,27 @@
   --color-hoverfx: #ffd166;
   --color-text: #2e2e2e;
 }
+html {
+  height: 100vh;
+  width: 100vw;
+  background-color: #287bf1;
+  background-image: url("../../public/img/clouds.png");
+  background-repeat: repeat;
+}
+.bg-op-50 {
+  background-color: rgba(65, 65, 65, 0.301) !important;
+}
 
-body {
-  font-family: var(--font-press-start-2p);
+/* Override pixel-retroui heading styles */
+h1 {
+  font-size: 2.3rem;
+  font-weight: normal;
+}
+h2 {
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
 }

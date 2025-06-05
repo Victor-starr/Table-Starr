@@ -1,0 +1,34 @@
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "pixel-retroui";
+import { Table } from "@/lib/types";
+import { timeAgo } from "@/utils/Time";
+
+type HistorySectionProps = {
+  tableData: Table;
+};
+const HistorySection = ({ tableData }: HistorySectionProps) => {
+  return (
+    <div className="mt-4">
+      <h2 className="mb-4">History</h2>
+      <Accordion>
+        {tableData.history.map((items, i) => (
+          <AccordionItem key={i} value={`item-${i}`}>
+            <AccordionTrigger>
+              <p>
+                {items.username}
+                {items.action}
+              </p>
+            </AccordionTrigger>
+            <AccordionContent>{timeAgo(items.timestamp)}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </div>
+  );
+};
+
+export default HistorySection;
