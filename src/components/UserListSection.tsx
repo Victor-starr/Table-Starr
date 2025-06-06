@@ -7,30 +7,50 @@ import {
 import { User } from "@/lib/types";
 interface UserListSectionProps {
   userList: User[];
+  onUserClick?: (user: User) => void;
+  activeUser?: User | null;
 }
-function UserListSection({ userList }: UserListSectionProps) {
+function UserListSection({
+  userList,
+  onUserClick,
+  activeUser,
+}: UserListSectionProps) {
+  const uniqueUsers = userList.filter(
+    (user, index, self) =>
+      index === self.findIndex((u) => u.username === user.username)
+  );
   return (
     <div className="mt-4">
       <h2 className="mb-4">User List</h2>
       <Accordion>
-        {userList.map((user, i) => (
+        {uniqueUsers.map((user, i) => (
           <AccordionItem key={i} value={`user-${i}`}>
             <AccordionTrigger>
-              <p>
+              <p
+                className={`cursor-pointer px-5 py-2 ${
+                  activeUser && activeUser.username === user.username
+                    ? "bg-secondary text-white"
+                    : ""
+                }`}
+                onClick={() => onUserClick && onUserClick(user)}
+              >
                 {user.username} - {user.totalSpending}$
               </p>
             </AccordionTrigger>
             <AccordionContent>
               {user.ordered.length > 0 ? (
-                user.ordered.map((order, j) => (
-                  <li
-                    key={j}
-                    className="flex justify-between py-3 borderBottom"
-                  >
-                    <span>{order.orderName}</span>
-                    <span>${order.price}</span>
-                  </li>
-                ))
+                <ul className="max-h-70 overflow-y-scroll cursor-pointer">
+                  {user.ordered.map((order, j) => (
+                    <li
+                      key={j}
+                      className="flex justify-between items-center px-4 py-3 borderBottom"
+                    >
+                      <span>
+                        {order.orderName} - ${order.price}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               ) : (
                 <p className="text-center">No orders yet.</p>
               )}

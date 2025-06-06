@@ -25,6 +25,7 @@ const TableSchema = new Schema(
         timestamp: { type: Date, default: Date.now },
       },
     ],
+    totalSpending: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

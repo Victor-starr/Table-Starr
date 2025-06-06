@@ -30,8 +30,9 @@ h2 {
   font-weight: normal;
 }
 h3 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
+  margin-bottom: 25px;
 }
 .borderBottom {
   border-bottom: solid 2px var(--color-border);

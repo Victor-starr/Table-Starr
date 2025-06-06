@@ -52,10 +52,10 @@ const Nav = ({ navigate, historyLogHandler, userListHandler }: NavProps) => {
         <span>
           <Button
             onClick={userListHandler}
-            bg="#ffca3a"
-            textColor="white"
-            borderColor="black"
-            shadow="#a83b00"
+            bg="#6c47d1"
+            textColor="#ffffff"
+            borderColor="#000000"
+            shadow="#4900b8"
           >
             <FaUser className="size-7 cursor-pointer" />
           </Button>

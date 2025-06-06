@@ -30,6 +30,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
     } else {
       fetchTableData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableId]);
 
   const fetchTableData = async () => {
@@ -94,5 +95,6 @@ export default function useTableData({ tableId }: UseTableDataProps) {
     createOrder,
     toggleHistorySection,
     toggleUserListSection,
+    fetchTableData, // Export fetchTableData for external use
   };
 }

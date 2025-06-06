@@ -1,5 +1,5 @@
 import { connectToDB, Table } from "@/lib/db/index";
-import { User } from "@/lib/types";
+import { TableOrder, User } from "@/lib/types";
 
 const createTable = async (tableData: {
   tableName: string;
@@ -17,6 +17,7 @@ const createTable = async (tableData: {
         action: "Created the table",
       },
     ],
+    totalSpending: 0,
   });
 
   await newTable.save();
@@ -104,6 +105,37 @@ const createOrder = async (
   return newOrder;
 };
 
+const addOrderToUser = async (
+  tableId: string,
+  username: string,
+  orderData: TableOrder
+) => {
+  await connectToDB();
+  const table = await Table.findById(tableId);
+  if (!table) {
+    throw new Error("Table not found");
+  }
+  const user = table.usersList.find((user: User) => user.username === username);
+  if (!user) {
+    throw new Error("User not found in the table");
+  }
+  // Only add to user's ordered list, not to table.orders
+  user.ordered.push({
+    orderName: orderData.orderName,
+    price: orderData.price,
+    timestamp: new Date(),
+  });
+  user.totalSpending += orderData.price;
+  table.totalSpending += orderData.price;
+  table.history.push({
+    username,
+    action: `Added an order: ${orderData.orderName}`,
+    timestamp: new Date(),
+  });
+  await table.save();
+  return user;
+};
+
 const tableServices = {
   createTable,
   allTables,
@@ -111,6 +143,7 @@ const tableServices = {
   deleteTable,
   userCheck,
   createOrder,
+  addOrderToUser,
 };
 
 export default tableServices;

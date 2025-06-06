@@ -11,6 +11,7 @@ export interface Table {
   orders: TableOrder[];
   usersList: User[];
   history: { username: string; action: string; timestamp: Date }[];
+  totalSpending: number;
 }
 export interface User {
   username: string;
