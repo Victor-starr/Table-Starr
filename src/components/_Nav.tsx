@@ -1,13 +1,14 @@
 import { useRouter } from "next/navigation";
 import { Button } from "pixel-retroui";
 import { IoMdClose } from "react-icons/io";
-import { FaHistory, FaShare } from "react-icons/fa";
+import { FaHistory, FaShare, FaUser } from "react-icons/fa";
 interface NavProps {
   navigate: string;
   historyLogHandler?: () => void;
+  userListHandler?: () => void;
 }
 
-const Nav = ({ navigate, historyLogHandler }: NavProps) => {
+const Nav = ({ navigate, historyLogHandler, userListHandler }: NavProps) => {
   const router = useRouter();
 
   const returnHomePage = () => {
@@ -49,6 +50,15 @@ const Nav = ({ navigate, historyLogHandler }: NavProps) => {
       </Button>
       {historyLogHandler && (
         <span>
+          <Button
+            onClick={userListHandler}
+            bg="#ffca3a"
+            textColor="white"
+            borderColor="black"
+            shadow="#a83b00"
+          >
+            <FaUser className="size-7 cursor-pointer" />
+          </Button>
           <Button
             onClick={historyLogHandler}
             bg="#ffca3a"

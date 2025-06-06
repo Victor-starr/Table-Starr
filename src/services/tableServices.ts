@@ -1,4 +1,5 @@
 import { connectToDB, Table } from "@/lib/db/index";
+import { User } from "@/lib/types";
 
 const createTable = async (tableData: {
   tableName: string;
@@ -24,9 +25,12 @@ const createTable = async (tableData: {
 
 const allTables = async (username: string) => {
   await connectToDB();
-  const tables = await Table.find({ createdBy: username }).sort({
+  const tables = await Table.find({
+    $or: [{ createdBy: username }, { "usersList.username": username }],
+  }).sort({
     createdAt: -1,
   });
+
   return tables;
 };
 
@@ -54,11 +58,20 @@ const userCheck = async (username: string, tableId: string) => {
   if (!table) {
     throw new Error("Table not found");
   }
-  if (!table.usersList.includes(username)) {
-    table.usersList.push(username);
+  const userExists = table.usersList.find(
+    (user: User) => user.username === username
+  );
+
+  if (!userExists) {
+    table.usersList.push({
+      username,
+      ordered: [],
+      totalSpending: 0,
+    });
     table.history.push({
       username,
       action: "Joined the table",
+      timestamp: new Date(),
     });
     await table.save();
   }

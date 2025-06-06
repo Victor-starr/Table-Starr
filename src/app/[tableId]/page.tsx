@@ -5,6 +5,8 @@ import { IoSend } from "react-icons/io5";
 import Nav from "@/components/_Nav";
 import HistorySection from "@/components/HistorySection";
 import useTableData from "@/hooks/useTableData";
+import UserListSection from "@/components/UserListSection";
+import OrderListSection from "@/components/OrderList.Section";
 
 export default function TablePage() {
   const { tableId } = useParams();
@@ -13,9 +15,11 @@ export default function TablePage() {
     tableData,
     orderList,
     historySection,
+    userListSection,
     connectToTable,
     createOrder,
     toggleHistorySection,
+    toggleUserListSection,
   } = useTableData({ tableId: tableId as string });
 
   const handleUsernameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,8 +68,13 @@ export default function TablePage() {
   }
 
   return (
-    <section className="relative flex flex-col justify-center px-15 py-10 w-full h-full text-black">
-      <Nav navigate="/tables-list" historyLogHandler={toggleHistorySection} />
+    <section className="relative flex flex-col justify-start px-15 pt-30 pb-10 w-full h-full text-black">
+      <Nav
+        navigate="/tables-list"
+        historyLogHandler={toggleHistorySection}
+        userListHandler={toggleUserListSection}
+      />
+
       <h2 className="text-center">
         {tableData?.tableName.split("-")[0]}`s Table
       </h2>
@@ -99,23 +108,13 @@ export default function TablePage() {
           </Button>
         </div>
       </form>
-      {orderList.length > 0 ? (
-        <ul>
-          {orderList.map((order, i) => (
-            <li
-              key={i}
-              className="flex justify-between items-center p-2 border-b"
-            >
-              <span>{order.orderName}</span>
-              <span>${order.price}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-center">No orders yet.</p>
-      )}
+
+      <OrderListSection orderList={orderList} />
 
       {historySection && tableData && <HistorySection tableData={tableData} />}
+      {userListSection && tableData && (
+        <UserListSection userList={tableData.usersList} />
+      )}
     </section>
   );
 }

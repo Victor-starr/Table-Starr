@@ -12,6 +12,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
   const [tableData, setTableData] = useState<Table | null>(null);
   const [orderList, setOrderList] = useState<TableOrder[]>([]);
   const [historySection, setHistorySection] = useState<boolean>(false);
+  const [userListSection, setUserListSection] = useState<boolean>(false);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -76,6 +77,11 @@ export default function useTableData({ tableId }: UseTableDataProps) {
 
   const toggleHistorySection = () => {
     setHistorySection((prev) => !prev);
+    setUserListSection(false);
+  };
+  const toggleUserListSection = () => {
+    setUserListSection((prev) => !prev);
+    setHistorySection(false);
   };
 
   return {
@@ -83,8 +89,10 @@ export default function useTableData({ tableId }: UseTableDataProps) {
     tableData,
     orderList,
     historySection,
+    userListSection,
     connectToTable,
     createOrder,
     toggleHistorySection,
+    toggleUserListSection,
   };
 }

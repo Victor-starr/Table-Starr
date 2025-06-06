@@ -9,6 +9,11 @@ export interface Table {
   _id: string;
   createdBy: string;
   orders: TableOrder[];
-  usersList: string[];
+  usersList: User[];
   history: { username: string; action: string; timestamp: Date }[];
+}
+export interface User {
+  username: string;
+  ordered: TableOrder[];
+  totalSpending: number;
 }
