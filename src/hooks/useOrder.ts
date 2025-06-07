@@ -69,6 +69,8 @@ export default function useOrder({ tableId, fetchTableData }: UseOrderProps) {
     form.reset();
   };
 
+  const clearActiveOrder = () => setActiveOrder(null);
+
   return {
     handleOrderClick,
     handleUserClick,
@@ -76,5 +78,6 @@ export default function useOrder({ tableId, fetchTableData }: UseOrderProps) {
     activeOrder,
     activeUser,
     handleOrderSubmit,
+    clearActiveOrder,
   };
 }

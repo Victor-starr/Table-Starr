@@ -1,16 +1,19 @@
 import { TableOrder } from "@/lib/types";
-import { Card } from "pixel-retroui";
+import { Button, Card } from "pixel-retroui";
+import { FaTrashAlt } from "react-icons/fa";
 
 interface OrderListSectionProps {
   orderList: TableOrder[];
   activeOrder: TableOrder | null;
   onOrderClick: (order: TableOrder) => void;
+  onOrderDelete: (order: TableOrder) => void;
 }
 
 function OrderListSection({
   orderList,
   activeOrder,
   onOrderClick,
+  onOrderDelete,
 }: OrderListSectionProps) {
   return (
     <>
@@ -27,6 +30,14 @@ function OrderListSection({
               <Card className="flex justify-between items-center">
                 <span>{order.orderName}</span>
                 <span>${order.price}</span>
+                <Button
+                  bg="red"
+                  textColor="white"
+                  className="flex justify-center items-center"
+                  onClick={() => onOrderDelete(order)}
+                >
+                  <FaTrashAlt className="text-lg" />
+                </Button>
               </Card>
             </li>
           ))}
