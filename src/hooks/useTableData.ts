@@ -19,7 +19,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
 
     if (storedUsername) {
       axios
-        .post("/api/username", { username: storedUsername, tableId })
+        .post("/api/username/check", { username: storedUsername, tableId })
         .then((res) => {
           setTableData(res.data.userCheck);
           setOrderList(res.data.userCheck.orders || []);
@@ -33,7 +33,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
 
   const fetchTableData = async () => {
     try {
-      const res = await axios.post("/api/table", { tableId });
+      const res = await axios.post("/api/table/all", { tableId });
       setTableData(res.data.currentTable);
       setOrderList(res.data.currentTable.orders || []);
     } catch (error) {
@@ -46,7 +46,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
     localStorage.setItem("tableId", tableId);
 
     try {
-      const res = await axios.post("/api/username", {
+      const res = await axios.post("/api/username/check", {
         username: usernameInput,
         tableId,
       });

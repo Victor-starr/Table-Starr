@@ -14,7 +14,7 @@ export const useTableList = () => {
     setLoading(true);
     try {
       const username = localStorage.getItem("username");
-      const res = await axios.post("/api/table", { username });
+      const res = await axios.post("/api/table/all", { username });
       setTableList(res.data.tableList);
     } catch {
       setError("Failed to fetch tables.");
@@ -38,7 +38,7 @@ export const useTableList = () => {
 
   const deleteTable = async (tableId: string) => {
     try {
-      await axios.delete("/api/table", { data: { tableId } });
+      await axios.delete("/api/table/delete", { data: { tableId } });
       setTableList((prev) => prev.filter((t) => t._id !== tableId));
     } catch {
       setError("Failed to delete table.");

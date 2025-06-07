@@ -1,4 +1,5 @@
 export interface TableOrder {
+  _id: string;
   username: string;
   orderName: string;
   price: number;

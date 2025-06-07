@@ -134,6 +134,61 @@ const addOrderToUser = async (
   await table.save();
   return user;
 };
+const deleteOrder = async (
+  username: string,
+  tableId: string,
+  orderId: string
+) => {
+  await connectToDB();
+  const table = await Table.findById(tableId);
+  if (!table) {
+    throw new Error("Table not found");
+  }
+  table.orders = table.orders.filter(
+    (ord: TableOrder) => ord._id.toString() !== orderId
+  );
+  table.history.push({
+    username,
+    action: `Deleted an order: ${orderId}`,
+    timestamp: new Date(),
+  });
+  table.save();
+  return table;
+};
+
+const deleteOrderFromUser = async (
+  username: string,
+  tableId: string,
+  orderId: string
+) => {
+  await connectToDB();
+  const table = await Table.findById(tableId);
+  if (!table) {
+    throw new Error("Table not found");
+  }
+  const user = table.usersList.find((user: User) => user.username === username);
+  if (!user) {
+    throw new Error("User not found in the table");
+  }
+  user.ordered = user.ordered.filter(
+    (ord: TableOrder) => ord._id.toString() !== orderId
+  );
+  const order = table.orders.find(
+    (ord: TableOrder) => ord._id.toString() === orderId
+  );
+  if (!order) {
+    throw new Error("Order not found in the table");
+  }
+  user.totalSpending -= order.price;
+  table.totalSpending -= order.price;
+  table.history.push({
+    username,
+    action: `Deleted an order from user: ${order.orderName}`,
+    timestamp: new Date(),
+  });
+  await table.save();
+  return user;
+};
 
 const tableServices = {
   createTable,
@@ -143,6 +198,8 @@ const tableServices = {
   userCheck,
   createOrder,
   addOrderToUser,
+  deleteOrder,
+  deleteOrderFromUser,
 };
 
 export default tableServices;
