@@ -173,22 +173,21 @@ const deleteOrderFromUser = async (
   if (!user) {
     throw new Error("User not found in the table");
   }
+  const userOrder = user.ordered.find(
+    (ord: TableOrder) => ord._id.toString() === orderId
+  );
   user.ordered = user.ordered.filter(
     (ord: TableOrder) => ord._id.toString() !== orderId
   );
-  const order = table.orders.find(
-    (ord: TableOrder) => ord._id.toString() === orderId
-  );
-  if (!order) {
-    throw new Error("Order not found in the table");
+  if (userOrder) {
+    user.totalSpending -= userOrder.price;
+    table.totalSpending -= userOrder.price;
+    table.history.push({
+      username,
+      action: `Deleted an order: ${userOrder.orderName}`,
+      timestamp: new Date(),
+    });
   }
-  user.totalSpending -= order.price;
-  table.totalSpending -= order.price;
-  table.history.push({
-    username,
-    action: `Deleted an order from user: ${order.orderName}`,
-    timestamp: new Date(),
-  });
   await table.save();
   return user;
 };

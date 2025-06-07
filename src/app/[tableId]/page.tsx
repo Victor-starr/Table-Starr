@@ -21,6 +21,7 @@ export default function TablePage() {
     orderList,
     fetchTableData,
     handleUsernameSubmit,
+    handleDeleteOrderFromUser,
   } = useTableData({
     tableId: tableId as string,
   });
@@ -153,6 +154,7 @@ export default function TablePage() {
           userList={tableData.usersList}
           onUserClick={handleUserClick}
           activeUser={activeUser}
+          onDeleteOrderFromUser={handleDeleteOrderFromUser}
         />
       )}
     </section>

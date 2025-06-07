@@ -9,13 +9,15 @@ import { User } from "@/lib/types";
 import { FaTrashAlt } from "react-icons/fa";
 interface UserListSectionProps {
   userList: User[];
-  onUserClick?: (user: User) => void;
-  activeUser?: User | null;
+  onUserClick: (user: User) => void;
+  activeUser: User | null;
+  onDeleteOrderFromUser: (username: string, orderId: string) => void;
 }
 function UserListSection({
   userList,
   onUserClick,
   activeUser,
+  onDeleteOrderFromUser,
 }: UserListSectionProps) {
   const uniqueUsers = userList.filter(
     (user, index, self) =>
@@ -54,6 +56,9 @@ function UserListSection({
                         bg="red"
                         textColor="white"
                         className="flex justify-center items-center"
+                        onClick={() =>
+                          onDeleteOrderFromUser(user.username, order._id)
+                        }
                       >
                         <FaTrashAlt className="text-lg" />
                       </Button>

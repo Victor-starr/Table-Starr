@@ -62,7 +62,23 @@ export default function useTableData({ tableId }: UseTableDataProps) {
     const usernameInput = e.currentTarget.username.value;
     connectToTable(usernameInput);
   };
-
+  const handleDeleteOrderFromUser = async (
+    username: string,
+    orderId: string
+  ) => {
+    try {
+      await axios.delete("/api/username/order-delete", {
+        data: {
+          username,
+          tableId,
+          orderId,
+        },
+      });
+      fetchTableData();
+    } catch (error) {
+      console.error("Error deleting order from user:", error);
+    }
+  };
   return {
     username,
     tableData,
@@ -71,5 +87,6 @@ export default function useTableData({ tableId }: UseTableDataProps) {
     fetchTableData,
     setOrderList,
     handleUsernameSubmit,
+    handleDeleteOrderFromUser,
   };
 }

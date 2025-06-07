@@ -75,6 +75,7 @@ export default function useOrder({
   };
 
   const clearActiveOrder = () => setActiveOrder(null);
+
   const handleOrderDelete = async (order: TableOrder) => {
     const orderId = order._id;
     try {
