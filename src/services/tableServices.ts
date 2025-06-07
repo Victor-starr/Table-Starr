@@ -1,13 +1,13 @@
 import { connectToDB, Table } from "@/lib/db/index";
 import { TableOrder, User } from "@/lib/types";
-
+import { formatDate } from "@/utils/Time";
 const createTable = async (tableData: {
   tableName: string;
   createdBy: string;
 }) => {
   await connectToDB();
   const newTable = new Table({
-    tableName: `${tableData.tableName.trim()}-${Date.now()}`,
+    tableName: `${tableData.tableName.trim()}-${formatDate(new Date())}`,
     createdBy: tableData.createdBy,
     usersList: [],
     orders: [],
@@ -119,7 +119,6 @@ const addOrderToUser = async (
   if (!user) {
     throw new Error("User not found in the table");
   }
-  // Only add to user's ordered list, not to table.orders
   user.ordered.push({
     orderName: orderData.orderName,
     price: orderData.price,

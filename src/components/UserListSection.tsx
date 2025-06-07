@@ -3,8 +3,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  Button,
 } from "pixel-retroui";
 import { User } from "@/lib/types";
+import { FaTrashAlt } from "react-icons/fa";
 interface UserListSectionProps {
   userList: User[];
   onUserClick?: (user: User) => void;
@@ -48,6 +50,13 @@ function UserListSection({
                       <span>
                         {order.orderName} - ${order.price}
                       </span>
+                      <Button
+                        bg="red"
+                        textColor="white"
+                        className="flex justify-center items-center"
+                      >
+                        <FaTrashAlt className="text-lg" />
+                      </Button>
                     </li>
                   ))}
                 </ul>

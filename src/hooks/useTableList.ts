@@ -49,6 +49,15 @@ export const useTableList = () => {
     localStorage.setItem("tableId", tableId);
     router.push(`/${tableId}`);
   };
+  const handleCreateTable = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const tableName = form.tableName.value.trim();
+
+    if (!tableName) return;
+    createTable(tableName);
+    form.reset();
+  };
 
   useEffect(() => {
     fetchTables();
@@ -61,5 +70,6 @@ export const useTableList = () => {
     createTable,
     deleteTable,
     connectToTable,
+    handleCreateTable,
   };
 };

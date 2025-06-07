@@ -11,20 +11,10 @@ export default function TableList() {
     tableList,
     loading,
     error,
-    createTable,
     deleteTable,
     connectToTable,
+    handleCreateTable,
   } = useTableList();
-
-  const handleCreateTable = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const tableName = form.tableName.value.trim();
-
-    if (!tableName) return;
-    createTable(tableName);
-    form.reset();
-  };
 
   return (
     <RequireGuest>
@@ -33,7 +23,7 @@ export default function TableList() {
         <h2 className="text-center">Create Your Table</h2>
 
         <form
-          onSubmit={handleCreateTable}
+          onSubmit={(e) => handleCreateTable(e)}
           className="flex flex-row gap-4 my-5 h-15"
         >
           <Input

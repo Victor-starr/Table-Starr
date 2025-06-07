@@ -11,8 +11,6 @@ export default function useTableData({ tableId }: UseTableDataProps) {
   const [username, setUsername] = useState<string | null>(null);
   const [tableData, setTableData] = useState<Table | null>(null);
   const [orderList, setOrderList] = useState<TableOrder[]>([]);
-  const [historySection, setHistorySection] = useState<boolean>(false);
-  const [userListSection, setUserListSection] = useState<boolean>(false);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -59,42 +57,19 @@ export default function useTableData({ tableId }: UseTableDataProps) {
     }
   };
 
-  const createOrder = async (orderData: {
-    orderName: string;
-    price: string;
-  }) => {
-    try {
-      const res = await axios.post("/api/order/create", {
-        username,
-        tableId,
-        orderData,
-      });
-      setOrderList((prev) => [...prev, res.data.order]);
-      fetchTableData();
-    } catch (error) {
-      console.error("Error creating order:", error);
-    }
-  };
-
-  const toggleHistorySection = () => {
-    setHistorySection((prev) => !prev);
-    setUserListSection(false);
-  };
-  const toggleUserListSection = () => {
-    setUserListSection((prev) => !prev);
-    setHistorySection(false);
+  const handleUsernameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const usernameInput = e.currentTarget.username.value;
+    connectToTable(usernameInput);
   };
 
   return {
     username,
     tableData,
     orderList,
-    historySection,
-    userListSection,
     connectToTable,
-    createOrder,
-    toggleHistorySection,
-    toggleUserListSection,
-    fetchTableData, // Export fetchTableData for external use
+    fetchTableData,
+    setOrderList,
+    handleUsernameSubmit,
   };
 }

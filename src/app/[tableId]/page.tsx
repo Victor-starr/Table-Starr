@@ -8,74 +8,38 @@ import useTableData from "@/hooks/useTableData";
 import UserListSection from "@/components/UserListSection";
 import OrderListSection from "@/components/OrderList.Section";
 import { useState } from "react";
-import { TableOrder, User } from "@/lib/types";
-import axios from "axios";
+import useOrder from "@/hooks/useOrder";
 
 export default function TablePage() {
+  const [toggleOrderList, setToggleOrderList] = useState(true);
+  const [historySection, setHistorySection] = useState<boolean>(false);
+  const [userListSection, setUserListSection] = useState<boolean>(false);
   const { tableId } = useParams();
   const {
     username,
     tableData,
     orderList,
-    historySection,
-    userListSection,
-    connectToTable,
-    createOrder,
-    toggleHistorySection,
-    toggleUserListSection,
-    fetchTableData, // Now available from useTableData
-  } = useTableData({ tableId: tableId as string });
+    fetchTableData,
+    handleUsernameSubmit,
+  } = useTableData({
+    tableId: tableId as string,
+  });
 
-  const [activeOrder, setActiveOrder] = useState<TableOrder | null>(null);
-  const [activeUser, setActiveUser] = useState<User | null>(null);
-  const [assigning, setAssigning] = useState(false);
-  const [toggleOrderList, setToggleOrderList] = useState(true);
+  const {
+    handleOrderClick,
+    handleUserClick,
+    activeOrder,
+    activeUser,
+    handleOrderSubmit,
+  } = useOrder({ tableId: tableId as string, fetchTableData });
 
-  const handleUsernameSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const usernameInput = e.currentTarget.username.value;
-    connectToTable(usernameInput);
+  const toggleHistorySection = () => {
+    setHistorySection((prev) => !prev);
+    setUserListSection(false);
   };
-
-  const handleOrderSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    const orderData = {
-      orderName: formData.get("order") as string,
-      price: formData.get("price") as string,
-    };
-
-    createOrder(orderData);
-    form.reset();
-  };
-
-  // New: handle order click
-  const handleOrderClick = (order: TableOrder) => {
-    setActiveOrder(order);
-  };
-
-  // New: handle user click
-  const handleUserClick = async (user: User) => {
-    setActiveUser(user);
-    if (activeOrder && !assigning) {
-      setAssigning(true);
-      try {
-        await axios.post("/api/order/add", {
-          username: user.username,
-          tableId,
-          orderData: activeOrder,
-        });
-        fetchTableData();
-      } catch {
-        // handle error
-      } finally {
-        setAssigning(false);
-        setActiveOrder(null);
-        setActiveUser(null);
-      }
-    }
+  const toggleUserListSection = () => {
+    setUserListSection((prev) => !prev);
+    setHistorySection(false);
   };
 
   if (!username) {
@@ -92,6 +56,7 @@ export default function TablePage() {
             name="username"
             required
             className="w-full"
+            maxLength={14}
           />
           <div className="flex gap-2">
             <Button type="submit" className="flex-1">
@@ -122,7 +87,10 @@ export default function TablePage() {
         )}
       </h3>
       <h2>Create Your Order</h2>
-      <form className="flex flex-col gap-2 pb-5" onSubmit={handleOrderSubmit}>
+      <form
+        className="flex flex-col gap-2 pb-5"
+        onSubmit={(e) => handleOrderSubmit(e, username as string)}
+      >
         <div className="flex-1">
           <Input
             placeholder="Order your food here..."

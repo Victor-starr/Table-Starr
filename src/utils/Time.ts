@@ -11,3 +11,14 @@ export function timeAgo(rawTimeStamp: Date): string {
   if (diffHours === 1) return "1 hour ago";
   return `${diffHours} hours ago`;
 }
+
+export function formatDate(rawTimeStamp: Date): string {
+  const date = new Date(rawTimeStamp);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
