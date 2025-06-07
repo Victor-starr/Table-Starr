@@ -9,8 +9,6 @@ import UserListSection from "@/components/UserListSection";
 import OrderListSection from "@/components/OrderList.Section";
 import { useState } from "react";
 import useOrder from "@/hooks/useOrder";
-import { TableOrder } from "@/lib/types";
-import axios from "axios";
 
 export default function TablePage() {
   const [toggleOrderList, setToggleOrderList] = useState(true);
@@ -33,8 +31,12 @@ export default function TablePage() {
     activeOrder,
     activeUser,
     handleOrderSubmit,
-    clearActiveOrder,
-  } = useOrder({ tableId: tableId as string, fetchTableData });
+    handleOrderDelete,
+  } = useOrder({
+    tableId: tableId as string,
+    username: username as string,
+    fetchTableData,
+  });
 
   const toggleHistorySection = () => {
     setHistorySection((prev) => !prev);
@@ -43,23 +45,6 @@ export default function TablePage() {
   const toggleUserListSection = () => {
     setUserListSection((prev) => !prev);
     setHistorySection(false);
-  };
-
-  const handleOrderDelete = async (order: TableOrder) => {
-    const orderId = order._id;
-    try {
-      await axios.delete("/api/order/delete", {
-        data: {
-          username,
-          tableId: tableId as string,
-          orderId: orderId,
-        },
-      });
-      fetchTableData();
-      clearActiveOrder();
-    } catch (error) {
-      console.error("Error deleting order:", error);
-    }
   };
 
   if (!username) {

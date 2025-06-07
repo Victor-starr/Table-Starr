@@ -144,12 +144,15 @@ const deleteOrder = async (
   if (!table) {
     throw new Error("Table not found");
   }
+  const order = table.orders.find(
+    (ord: TableOrder) => ord._id.toString() === orderId
+  );
   table.orders = table.orders.filter(
     (ord: TableOrder) => ord._id.toString() !== orderId
   );
   table.history.push({
     username,
-    action: `Deleted an order: ${orderId}`,
+    action: `Deleted an order: ${order.orderName}`,
     timestamp: new Date(),
   });
   table.save();

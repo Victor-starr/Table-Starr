@@ -5,10 +5,15 @@ import { useState } from "react";
 
 interface UseOrderProps {
   tableId: string;
+  username: string;
   fetchTableData: () => Promise<void>;
 }
 
-export default function useOrder({ tableId, fetchTableData }: UseOrderProps) {
+export default function useOrder({
+  tableId,
+  username,
+  fetchTableData,
+}: UseOrderProps) {
   const [activeOrder, setActiveOrder] = useState<TableOrder | null>(null);
   const [activeUser, setActiveUser] = useState<User | null>(null);
   const [assigning, setAssigning] = useState(false);
@@ -70,6 +75,22 @@ export default function useOrder({ tableId, fetchTableData }: UseOrderProps) {
   };
 
   const clearActiveOrder = () => setActiveOrder(null);
+  const handleOrderDelete = async (order: TableOrder) => {
+    const orderId = order._id;
+    try {
+      await axios.delete("/api/order/delete", {
+        data: {
+          username,
+          tableId: tableId as string,
+          orderId: orderId,
+        },
+      });
+      fetchTableData();
+      clearActiveOrder();
+    } catch (error) {
+      console.error("Error deleting order:", error);
+    }
+  };
 
   return {
     handleOrderClick,
@@ -78,6 +99,6 @@ export default function useOrder({ tableId, fetchTableData }: UseOrderProps) {
     activeOrder,
     activeUser,
     handleOrderSubmit,
-    clearActiveOrder,
+    handleOrderDelete,
   };
 }
