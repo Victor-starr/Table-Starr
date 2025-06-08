@@ -1,15 +1,18 @@
 "use client";
 import { createContext } from "react";
 import { NotificationType } from "@/lib/types";
-interface NotificationContextType {
+interface NotificationItem {
   message: string;
   status: number;
+  id: number;
+}
+interface NotificationContextType {
+  notifications: NotificationItem[];
   showNotification: (response: NotificationType) => void;
 }
 
 const DefaultNotificationContext: NotificationContextType = {
-  message: "",
-  status: 0,
+  notifications: [],
   showNotification: () => {},
 };
 export const NotificationContext = createContext<NotificationContextType>(
