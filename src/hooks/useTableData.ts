@@ -1,7 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { Table, TableOrder } from "@/lib/types";
+import { ServerErrorMessage, Table, TableOrder } from "@/lib/types";
+import { NotificationContext } from "@/context/NotificationContext";
 
 interface UseTableDataProps {
   tableId: string;
@@ -11,6 +12,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
   const [username, setUsername] = useState<string | null>(null);
   const [tableData, setTableData] = useState<Table | null>(null);
   const [orderList, setOrderList] = useState<TableOrder[]>([]);
+  const { showNotification } = useContext(NotificationContext);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -24,7 +26,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
           setTableData(res.data.userCheck);
           setOrderList(res.data.userCheck.orders || []);
         })
-        .catch((err) => console.error("Error connecting to table:", err));
+        .catch((err) => showNotification(err as ServerErrorMessage));
     } else {
       fetchTableData();
     }
@@ -37,7 +39,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
       setTableData(res.data.currentTable);
       setOrderList(res.data.currentTable.orders || []);
     } catch (error) {
-      console.error("Error fetching table data:", error);
+      showNotification(error as ServerErrorMessage);
     }
   };
 
@@ -53,7 +55,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
       setUsername(usernameInput);
       setTableData(res.data.userCheck);
     } catch (error) {
-      console.error("Error connecting to table:", error);
+      showNotification(error as ServerErrorMessage);
     }
   };
 
@@ -67,7 +69,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
     orderId: string
   ) => {
     try {
-      await axios.delete("/api/username/order-delete", {
+      const res = await axios.delete("/api/username/order-delete", {
         data: {
           username,
           tableId,
@@ -75,8 +77,9 @@ export default function useTableData({ tableId }: UseTableDataProps) {
         },
       });
       fetchTableData();
+      showNotification(res);
     } catch (error) {
-      console.error("Error deleting order from user:", error);
+      showNotification(error as ServerErrorMessage);
     }
   };
   return {

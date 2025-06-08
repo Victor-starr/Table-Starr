@@ -19,3 +19,25 @@ export interface User {
   ordered: TableOrder[];
   totalSpending: number;
 }
+
+type ServerResponde = {
+  status: number;
+  data: {
+    message: string;
+  };
+};
+export type ServerErrorMessage = {
+  status: number;
+  data: {
+    error: string;
+  };
+};
+
+type CustomNotification = {
+  message: string;
+  status: number;
+};
+export type NotificationType =
+  | ServerErrorMessage
+  | ServerResponde
+  | CustomNotification;

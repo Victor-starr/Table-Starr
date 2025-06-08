@@ -1,7 +1,8 @@
 "use client";
-import { TableOrder, User } from "@/lib/types";
+import { NotificationContext } from "@/context/NotificationContext";
+import { TableOrder, User, ServerErrorMessage } from "@/lib/types";
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 interface UseOrderProps {
   tableId: string;
@@ -17,6 +18,7 @@ export default function useOrder({
   const [activeOrder, setActiveOrder] = useState<TableOrder | null>(null);
   const [activeUser, setActiveUser] = useState<User | null>(null);
   const [assigning, setAssigning] = useState(false);
+  const { showNotification } = useContext(NotificationContext);
 
   const handleOrderClick = (order: TableOrder) => {
     setActiveOrder(order);
@@ -26,14 +28,15 @@ export default function useOrder({
     if (activeOrder && !assigning) {
       setAssigning(true);
       try {
-        await axios.post("/api/order/add", {
+        const res = await axios.post("/api/order/add", {
           username: user.username,
           tableId,
           orderData: activeOrder,
         });
         fetchTableData();
-      } catch {
-        console.error("Error assigning order to user");
+        showNotification(res);
+      } catch (error) {
+        showNotification(error as ServerErrorMessage);
       } finally {
         setAssigning(false);
         setActiveOrder(null);
@@ -49,14 +52,15 @@ export default function useOrder({
     username: string
   ) => {
     try {
-      await axios.post("/api/order/create", {
+      const res = await axios.post("/api/order/create", {
         username,
         tableId,
         orderData,
       });
       fetchTableData();
+      showNotification(res);
     } catch (error) {
-      console.error("Error creating order:", error);
+      showNotification(error as ServerErrorMessage);
     }
   };
   const handleOrderSubmit = (
@@ -79,7 +83,7 @@ export default function useOrder({
   const handleOrderDelete = async (order: TableOrder) => {
     const orderId = order._id;
     try {
-      await axios.delete("/api/order/delete", {
+      const res = await axios.delete("/api/order/delete", {
         data: {
           username,
           tableId: tableId as string,
@@ -87,9 +91,10 @@ export default function useOrder({
         },
       });
       fetchTableData();
+      showNotification(res);
       clearActiveOrder();
     } catch (error) {
-      console.error("Error deleting order:", error);
+      showNotification(error as ServerErrorMessage);
     }
   };
 

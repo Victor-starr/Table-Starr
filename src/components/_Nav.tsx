@@ -38,7 +38,7 @@ const Nav = ({ navigate, historyLogHandler, userListHandler }: NavProps) => {
   };
 
   return (
-    <nav className="top-0 left-0 absolute flex flex-row justify-between items-center bg-secondary shadow-md p-4 w-full">
+    <nav className="top-0 left-0 z-10 fixed flex flex-row justify-between items-center bg-secondary shadow-md p-4 w-full">
       <Button
         onClick={returnHomePage}
         bg="#ff595e"

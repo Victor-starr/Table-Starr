@@ -1,14 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { Table } from "@/lib/types";
+import { ServerErrorMessage, Table } from "@/lib/types";
 import { useRouter } from "next/navigation";
+import { NotificationContext } from "@/context/NotificationContext";
 
 export const useTableList = () => {
   const [tableList, setTableList] = useState<Table[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { showNotification } = useContext(NotificationContext);
 
   const fetchTables = async () => {
     setLoading(true);
@@ -16,8 +18,8 @@ export const useTableList = () => {
       const username = localStorage.getItem("username");
       const res = await axios.post("/api/table/all", { username });
       setTableList(res.data.tableList);
-    } catch {
-      setError("Failed to fetch tables.");
+    } catch (error) {
+      showNotification(error as ServerErrorMessage);
     } finally {
       setLoading(false);
     }
@@ -31,8 +33,10 @@ export const useTableList = () => {
         createdBy,
       });
       setTableList((prev) => [...prev, res.data.newTable]);
-    } catch {
+      showNotification(res);
+    } catch (error) {
       setError("Failed to create table.");
+      showNotification(error as ServerErrorMessage);
     }
   };
 
@@ -40,8 +44,9 @@ export const useTableList = () => {
     try {
       await axios.delete("/api/table/delete", { data: { tableId } });
       setTableList((prev) => prev.filter((t) => t._id !== tableId));
-    } catch {
+    } catch (error) {
       setError("Failed to delete table.");
+      showNotification(error as ServerErrorMessage);
     }
   };
 

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "@/lib/pixel-retroui-setup.js";
 import "@/styles/globals.css";
+import NotificationProvider from "@/context/NotificationProvider";
+import Notification from "@/components/Notification";
 
 export const metadata: Metadata = {
   title: "Table Starr ⭐",
@@ -16,9 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex justify-center bg-op-50 w-screen h-screen">
-        <main className="flex flex-col justify-center items-center bg-background rounded-xl w-[450px] h-full">
-          {children}
-        </main>
+        <NotificationProvider>
+          <Notification />
+          <main className="flex flex-col justify-center items-center bg-background rounded-xl w-[450px] h-full overflow-y-scroll">
+            {children}
+          </main>
+        </NotificationProvider>
       </body>
     </html>
   );

@@ -1,13 +1,13 @@
 import { type NextRequest } from "next/server";
 import tableServices from "@/services/tableServices";
-
+import { getErrorMessage } from "@/utils/errorHandler";
 export async function POST(req: NextRequest) {
   const { username, tableId } = await req.json();
   try {
     if (!tableId) {
       const tableList = await tableServices.allTables(username);
       return Response.json(
-        { message: "Tables fetched successfully", tableList },
+        { message: "All tables fetched successfully", tableList },
         { status: 200 }
       );
     } else {
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       );
     }
   } catch (error) {
-    console.error("Error creating table:", error);
-    return Response.json({ error: "Failed to create table" }, { status: 500 });
+    const errorMessage = getErrorMessage(error);
+    return Response.json({ error: errorMessage }, { status: 500 });
   }
 }

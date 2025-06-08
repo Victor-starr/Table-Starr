@@ -1,5 +1,6 @@
 import { type NextRequest } from "next/server";
 import tableServices from "@/services/tableServices";
+import { getErrorMessage } from "@/utils/errorHandler";
 
 export async function DELETE(req: NextRequest) {
   const { tableId } = await req.json();
@@ -10,7 +11,7 @@ export async function DELETE(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting table:", error);
-    return Response.json({ error: "Failed to delete table" }, { status: 500 });
+    const errorMessage = getErrorMessage(error);
+    return Response.json({ error: errorMessage }, { status: 500 });
   }
 }

@@ -75,14 +75,14 @@ export default function TablePage() {
   }
 
   return (
-    <section className="relative flex flex-col justify-start px-15 pt-30 pb-10 w-full h-full text-black">
+    <section className="relative flex flex-col justify-start items-center px-15 w-full h-full text-black">
       <Nav
         navigate="/tables-list"
         historyLogHandler={toggleHistorySection}
         userListHandler={toggleUserListSection}
       />
 
-      <h3 className="text-primary text-center">
+      <h3 className="mt-custom-28 text-primary text-center">
         {tableData ? (
           <>
             <span>{`${tableData.tableName.split("-")[0]}'s Table - `}</span>
@@ -92,63 +92,68 @@ export default function TablePage() {
           "Loading..."
         )}
       </h3>
-      <h2>Create Your Order</h2>
-      <form
-        className="flex flex-col gap-2 pb-5"
-        onSubmit={(e) => handleOrderSubmit(e, username as string)}
-      >
-        <div className="flex-1">
-          <Input
-            placeholder="Order your food here..."
-            name="order"
-            type="text"
-            required
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-1 gap-2">
-          <Input
-            placeholder="$ 0.00.."
-            name="price"
-            type="number"
-            required
-            className="flex-1"
-          />
-          <Button
-            type="submit"
-            shadow="#999999"
-            className="flex flex-1 justify-center items-center"
+      {!historySection ? (
+        <>
+          <h2>Create Your Order</h2>
+          <form
+            className="flex flex-col gap-2 pb-5"
+            onSubmit={(e) => handleOrderSubmit(e, username as string)}
           >
-            <IoSend className="size-5 text-center" />
-          </Button>
-        </div>
-      </form>
-      <Card>
-        <div className="flex flex-row gap-2 mb-4">
-          <h2>Created Orders</h2>
-          <Button
-            onClick={() => setToggleOrderList(!toggleOrderList)}
-            className="flex justify-center items-center w-10"
-          >
-            {toggleOrderList ? (
-              <IoCaretUp size={20} />
-            ) : (
-              <IoCaretDown size={20} />
+            <div className="flex-1">
+              <Input
+                placeholder="Order your food here..."
+                name="order"
+                type="text"
+                required
+                className="w-full"
+              />
+            </div>
+            <div className="flex flex-1 gap-2">
+              <Input
+                placeholder="$ 0.00.."
+                name="price"
+                type="number"
+                required
+                className="flex-1"
+              />
+              <Button
+                type="submit"
+                shadow="#999999"
+                className="flex flex-1 justify-center items-center"
+              >
+                <IoSend className="size-5 text-center" />
+              </Button>
+            </div>
+          </form>
+          <Card>
+            <div className="flex flex-row gap-2 mb-4">
+              <h2>Created Orders</h2>
+              <Button
+                onClick={() => setToggleOrderList(!toggleOrderList)}
+                className="flex justify-center items-center w-10"
+              >
+                {toggleOrderList ? (
+                  <IoCaretUp size={20} />
+                ) : (
+                  <IoCaretDown size={20} />
+                )}
+              </Button>
+            </div>
+
+            {toggleOrderList && (
+              <OrderListSection
+                orderList={orderList}
+                activeOrder={activeOrder}
+                onOrderClick={handleOrderClick}
+                onOrderDelete={handleOrderDelete}
+              />
             )}
-          </Button>
-        </div>
+          </Card>
+        </>
+      ) : (
+        tableData && <HistorySection tableData={tableData} />
+      )}
 
-        {toggleOrderList && (
-          <OrderListSection
-            orderList={orderList}
-            activeOrder={activeOrder}
-            onOrderClick={handleOrderClick}
-            onOrderDelete={handleOrderDelete}
-          />
-        )}
-      </Card>
-
-      {historySection && tableData && <HistorySection tableData={tableData} />}
       {userListSection && tableData && (
         <UserListSection
           userList={tableData.usersList}

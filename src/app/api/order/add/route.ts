@@ -1,4 +1,5 @@
 import tableServices from "@/services/tableServices";
+import { getErrorMessage } from "@/utils/errorHandler";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -14,10 +15,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error adding order to user:", error);
-    return Response.json(
-      { error: "Failed to add order to user" },
-      { status: 500 }
-    );
+    const errorMessage = getErrorMessage(error);
+    return Response.json({ error: errorMessage }, { status: 500 });
   }
 }
