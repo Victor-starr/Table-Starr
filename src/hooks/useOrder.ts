@@ -3,6 +3,7 @@ import { NotificationContext } from "@/context/NotificationContext";
 import { TableOrder, User, ServerErrorMessage } from "@/lib/types";
 import axios from "axios";
 import { useContext, useState } from "react";
+import { useUserExp } from "./useUserExp";
 
 interface UseOrderProps {
   tableId: string;
@@ -19,6 +20,8 @@ export default function useOrder({
   const [activeUser, setActiveUser] = useState<User | null>(null);
   const [assigning, setAssigning] = useState(false);
   const { showNotification } = useContext(NotificationContext);
+  const { startLoading, stopLoading, setErrorMessage, loading, error } =
+    useUserExp();
 
   const handleOrderClick = (order: TableOrder) => {
     setActiveOrder(order);
@@ -28,6 +31,7 @@ export default function useOrder({
     if (activeOrder && !assigning) {
       setAssigning(true);
       try {
+        startLoading();
         const res = await axios.post("/api/order/add", {
           username: user.username,
           tableId,
@@ -36,8 +40,10 @@ export default function useOrder({
         fetchTableData();
         showNotification(res);
       } catch (error) {
+        setErrorMessage((error as ServerErrorMessage).data.error);
         showNotification(error as ServerErrorMessage);
       } finally {
+        stopLoading();
         setAssigning(false);
         setActiveOrder(null);
         setActiveUser(null);
@@ -52,6 +58,7 @@ export default function useOrder({
     username: string
   ) => {
     try {
+      startLoading();
       const res = await axios.post("/api/order/create", {
         username,
         tableId,
@@ -60,7 +67,10 @@ export default function useOrder({
       fetchTableData();
       showNotification(res);
     } catch (error) {
+      setErrorMessage((error as ServerErrorMessage).data.error);
       showNotification(error as ServerErrorMessage);
+    } finally {
+      stopLoading();
     }
   };
   const handleOrderSubmit = (
@@ -99,6 +109,8 @@ export default function useOrder({
   };
 
   return {
+    loading,
+    error,
     handleOrderClick,
     handleUserClick,
     createOrder,
