@@ -15,7 +15,6 @@ export default function TableList() {
     connectToTable,
     handleCreateTable,
   } = useTableList();
-  console.log(tableList);
 
   return (
     <RequireGuest>

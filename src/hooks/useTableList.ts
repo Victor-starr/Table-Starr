@@ -66,10 +66,6 @@ export const useTableList = () => {
     e.preventDefault();
     const form = e.currentTarget;
     const tableName = form.tableName.value.trim();
-    if (tableName === "Hel") {
-      setErrorMessage("Table name cannot be 'Hel'");
-      return;
-    }
     if (!tableName) return;
     createTable(tableName);
     form.reset();

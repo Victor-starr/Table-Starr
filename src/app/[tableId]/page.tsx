@@ -16,6 +16,8 @@ export default function TablePage() {
   const [userListSection, setUserListSection] = useState<boolean>(false);
   const { tableId } = useParams();
   const {
+    loading,
+    error,
     username,
     tableData,
     orderList,
@@ -54,7 +56,7 @@ export default function TablePage() {
         <h1 className="text-center">Set your Username ⭐</h1>
         <form
           onSubmit={handleUsernameSubmit}
-          className="flex flex-col gap-4 py-5"
+          className="flex flex-col gap-4 my-15"
         >
           <Input
             placeholder="Enter your Username..."
@@ -65,11 +67,18 @@ export default function TablePage() {
             maxLength={14}
           />
           <div className="flex gap-2">
-            <Button type="submit" className="flex-1">
+            <Button
+              type="submit"
+              className="flex-1"
+              disabled={loading}
+              bg={loading ? "#ccc" : "#6a4c93"}
+              textColor="white"
+            >
               All Tables
             </Button>
           </div>
         </form>
+        {error && <p className="text-red-500">{error}</p>}
       </>
     );
   }

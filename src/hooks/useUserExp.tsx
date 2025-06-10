@@ -8,15 +8,12 @@ export const useUserExp = () => {
   const startLoading = () => {
     setLoading(true);
     setError(null);
-    console.log("Loading started");
   };
 
   const stopLoading = () => {
     setLoading(false);
-    console.log("Loading stopped");
   };
 
-  // Call this when async operation fails
   const setErrorMessage = (message: string) => {
     setError(message);
     setLoading(false);

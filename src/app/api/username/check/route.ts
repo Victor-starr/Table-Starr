@@ -4,7 +4,6 @@ import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { username, tableId } = await req.json();
-
   try {
     const userCheck = await tableServices.userCheck(username, tableId);
     return Response.json(
@@ -13,6 +12,6 @@ export async function POST(req: NextRequest) {
     );
   } catch (error) {
     const errorMessage = getErrorMessage(error);
-    return Response.json({ error: errorMessage }, { status: 500 });
+    return Response.json({ error: errorMessage }, { status: 201 });
   }
 }
