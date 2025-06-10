@@ -15,10 +15,11 @@ export default function TableList() {
     connectToTable,
     handleCreateTable,
   } = useTableList();
+  console.log(tableList);
 
   return (
     <RequireGuest>
-      <section className="relative flex flex-col justify-center px-15 py-10 w-full h-full text-black">
+      <section className="relative flex flex-col justify-center px-5 py-15 w-full h-full text-black">
         <Nav navigate="/" />
         <h2 className="text-center">Create Your Table</h2>
 
@@ -27,24 +28,28 @@ export default function TableList() {
           className="flex flex-row gap-4 my-5 h-15"
         >
           <Input
-            className="flex-5 mx-0"
+            className="flex-5 mx-0 text-md"
             type="text"
-            placeholder="Enter Table Name..."
+            placeholder="Table Name..."
             name="tableName"
             required
           />
           <Button
             type="submit"
+            bg={loading ? "rgba(0, 0, 0, 0.204)" : "#1982c4"}
+            textColor="white"
+            disabled={loading}
             className="flex flex-1 justify-center items-center mx-0"
           >
             <FaPlus className="text-3xl" />
           </Button>
         </form>
 
-        {loading && <p>Loading tables...</p>}
         {error && <p className="text-red-500">{error}</p>}
 
-        {!loading && !error && (
+        {loading ? (
+          <p>Loading tables...</p>
+        ) : (
           <>
             {tableList.length > 0 ? (
               <div className="flex flex-col gap-4">
@@ -54,9 +59,9 @@ export default function TableList() {
                     className="cursor-pointer"
                     onClick={() => connectToTable(table._id)}
                   >
-                    <Card className="flex flex-row justify-between items-center gap-2">
-                      <div>
-                        <h3>{table.tableName}</h3>
+                    <Card className="flex flex-row justify-center items-center gap-2">
+                      <div className="px-2">
+                        <h4>{table.tableName}</h4>
                         <p className="text-gray-500 text-sm">
                           {table.createdBy}
                         </p>
@@ -68,7 +73,7 @@ export default function TableList() {
                           e.stopPropagation();
                           deleteTable(table._id);
                         }}
-                        className="flex justify-center items-center"
+                        className="flex justify-center items-center mx-2"
                       >
                         <FaTrashAlt className="text-3xl" />
                       </Button>

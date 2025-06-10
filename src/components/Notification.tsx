@@ -33,7 +33,7 @@ const Notification = () => {
         };
       default:
         return {
-          bg: "#ffffff",
+          bg: "#e2e3e5",
           textColor: "#000000",
           borderColor: "#000000",
           emoji: "ℹ️",

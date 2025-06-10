@@ -2,6 +2,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "pixel-retroui";
 import { IoMdClose } from "react-icons/io";
 import { FaHistory, FaShare, FaUser } from "react-icons/fa";
+import { useContext } from "react";
+import { NotificationContext } from "@/context/NotificationContext";
 interface NavProps {
   navigate: string;
   historyLogHandler?: () => void;
@@ -10,6 +12,7 @@ interface NavProps {
 
 const Nav = ({ navigate, historyLogHandler, userListHandler }: NavProps) => {
   const router = useRouter();
+  const { showNotification } = useContext(NotificationContext);
 
   const returnHomePage = () => {
     switch (navigate) {
@@ -29,8 +32,10 @@ const Nav = ({ navigate, historyLogHandler, userListHandler }: NavProps) => {
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        //TODO: change it to custom notification UI
-        alert("Table link copied to clipboard!");
+        showNotification({
+          message: "Table link copied to clipboard!",
+          status: NaN,
+        });
       })
       .catch((err) => {
         console.error("Failed to copy table link: ", err);
