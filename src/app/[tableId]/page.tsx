@@ -15,6 +15,7 @@ export default function TablePage() {
   const [historySection, setHistorySection] = useState<boolean>(false);
   const [userListSection, setUserListSection] = useState<boolean>(false);
   const { tableId } = useParams();
+  // TODO ADD THE LOADING AND ERROR STATE TO THE COMPONENT
   const {
     loading,
     error,

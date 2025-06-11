@@ -1,5 +1,6 @@
 import tableServices from "@/services/tableServices";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { pusherServer } from "@/lib/pusherServer";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -7,6 +8,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const order = await tableServices.createOrder(username, tableId, orderData);
+    await pusherServer.trigger(`table-${tableId}`, "order-created", { order });
     return Response.json(
       { message: "Order created successfully", order },
       { status: 200 }

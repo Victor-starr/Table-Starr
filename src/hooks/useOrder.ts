@@ -100,7 +100,6 @@ export default function useOrder({
           orderId: orderId,
         },
       });
-      fetchTableData();
       showNotification(res);
       clearActiveOrder();
     } catch (error) {

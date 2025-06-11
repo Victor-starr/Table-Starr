@@ -1,6 +1,7 @@
 import { connectToDB, Table } from "@/lib/db/index";
 import { TableOrder, User } from "@/lib/types";
 import { formatDate } from "@/utils/Time";
+
 const createTable = async (tableData: {
   tableName: string;
   createdBy: string;
@@ -89,19 +90,21 @@ const createOrder = async (
   if (!table) {
     throw new Error("Table not found");
   }
-  const newOrder = {
+  const orderTemplate = {
     username,
     orderName: orderData.orderName,
     price: orderData.price,
     timestamp: new Date(),
   };
-  table.orders.push(newOrder);
+  table.orders.push(orderTemplate);
   table.history.push({
     username,
     action: `Created an order: ${orderData.orderName}`,
     timestamp: new Date(),
   });
   await table.save();
+
+  const newOrder = table.orders[table.orders.length - 1];
   return newOrder;
 };
 
@@ -147,6 +150,9 @@ const deleteOrder = async (
   const order = table.orders.find(
     (ord: TableOrder) => ord._id.toString() === orderId
   );
+  if (!order) {
+    throw new Error("Order not found");
+  }
   table.orders = table.orders.filter(
     (ord: TableOrder) => ord._id.toString() !== orderId
   );

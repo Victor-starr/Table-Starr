@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { ServerErrorMessage, Table, TableOrder } from "@/lib/types";
+import { ServerErrorMessage } from "@/lib/types";
 import { NotificationContext } from "@/context/NotificationContext";
 import { useUserExp } from "./useUserExp";
+import { useTablePusherEvents } from "./useTablePusherEvents";
 
 interface UseTableDataProps {
   tableId: string;
@@ -13,16 +14,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
   const { showNotification } = useContext(NotificationContext);
   const { startLoading, stopLoading, setErrorMessage, loading, error } =
     useUserExp();
-
   const [username, setUsername] = useState<string | null>(null);
-  const [tableData, setTableData] = useState<Table | null>(null);
-  const [orderList, setOrderList] = useState<TableOrder[]>([]);
-
-  useEffect(() => {
-    fetchUserData();
-    localStorage.setItem("tableId", tableId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableId]);
 
   const fetchUserData = async () => {
     const storedUsername = localStorage.getItem("username");
@@ -60,6 +52,14 @@ export default function useTableData({ tableId }: UseTableDataProps) {
       stopLoading();
     }
   };
+  const { orderList, setOrderList, tableData, setTableData } =
+    useTablePusherEvents(tableId, fetchTableData);
+
+  useEffect(() => {
+    fetchUserData();
+    localStorage.setItem("tableId", tableId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableId]);
 
   const connectToTable = async (usernameInput: string) => {
     try {
