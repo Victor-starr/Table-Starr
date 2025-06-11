@@ -162,7 +162,7 @@ const deleteOrder = async (
     timestamp: new Date(),
   });
   table.save();
-  return table;
+  return order;
 };
 
 const deleteOrderFromUser = async (

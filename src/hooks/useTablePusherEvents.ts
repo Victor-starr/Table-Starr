@@ -10,28 +10,56 @@ export function useTablePusherEvents(
   const [tableData, setTableData] = useState<Table | null>(null);
   const [orderList, setOrderList] = useState<TableOrder[]>([]);
 
+  const updateHistorytable = (
+    username: string,
+    action: string,
+    timestamp: Date
+  ) => {
+    setTableData((prevTable) => {
+      if (!prevTable) return prevTable;
+      const history = prevTable.history || [];
+      return {
+        ...prevTable,
+        history: [...history, { username, action, timestamp }],
+      };
+    });
+  };
+
   useEffect(() => {
     const channel = pusherClient.subscribe(`table-${tableId}`);
 
     const handlerNewOrder = (data: { order: TableOrder }) => {
       setOrderList((prevOrders) => [...prevOrders, data.order]);
+      updateHistorytable(
+        data.order.username,
+        `Added a new order: ${data.order.orderName}`,
+        new Date(data.order.timestamp)
+      );
     };
+
     const handlerOrderDeleted = (data: {
       username: string;
-      orderId: string;
+      order: TableOrder;
     }) => {
       setOrderList((prevOrders) =>
-        prevOrders.filter((order) => order._id !== data.orderId)
+        prevOrders.filter((order) => order._id !== data.order._id)
+      );
+      updateHistorytable(
+        data.order.username,
+        `Deleted an order: ${data.order.orderName}`,
+        new Date(data.order.timestamp)
       );
     };
 
     channel.bind("order-created", handlerNewOrder);
     channel.bind("order-deleted", handlerOrderDeleted);
     channel.bind("order-add", fetchTableData);
+    channel.bind("table-user-order-deleted", fetchTableData);
     return () => {
       channel.unbind("order-created", handlerNewOrder);
       channel.unbind("order-deleted", handlerOrderDeleted);
       channel.unbind("order-add", fetchTableData);
+      channel.unbind("table-user-order-deleted", fetchTableData);
       pusherClient.unsubscribe(`table-${tableId}`);
     };
   }, [tableId, fetchTableData]);

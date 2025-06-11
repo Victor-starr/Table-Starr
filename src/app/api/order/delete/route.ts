@@ -7,10 +7,10 @@ export async function DELETE(req: NextRequest) {
   const { username, tableId, orderId } = await req.json();
 
   try {
-    await tableServices.deleteOrder(username, tableId, orderId);
+    const order = await tableServices.deleteOrder(username, tableId, orderId);
     await pusherServer.trigger(`table-${tableId}`, "order-deleted", {
       username,
-      orderId,
+      order,
     });
     return Response.json(
       { message: "Order deleted successfully" },
