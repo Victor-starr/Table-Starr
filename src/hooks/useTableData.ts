@@ -96,7 +96,6 @@ export default function useTableData({ tableId }: UseTableDataProps) {
           orderId,
         },
       });
-      fetchTableData();
       showNotification(res);
     } catch (error) {
       setErrorMessage((error as ServerErrorMessage).data.error);

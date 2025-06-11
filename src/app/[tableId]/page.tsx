@@ -128,10 +128,17 @@ export default function TablePage() {
               />
               <Button
                 type="submit"
-                shadow="#999999"
+                shadow={loading ? "#454545" : "#002594"}
+                disabled={loading}
+                bg={loading ? "#dedede" : "#1982c4"}
+                textColor={loading ? "#383838" : "white"}
                 className="flex flex-1 justify-center items-center"
               >
-                <IoSend className="size-5 text-center" />
+                {loading ? (
+                  <span>Creating...</span>
+                ) : (
+                  <IoSend className="size-5 text-center" />
+                )}
               </Button>
             </div>
           </form>
