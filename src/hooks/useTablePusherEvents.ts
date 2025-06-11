@@ -20,7 +20,7 @@ export function useTablePusherEvents(
       const history = prevTable.history || [];
       return {
         ...prevTable,
-        history: [...history, { username, action, timestamp }],
+        history: [{ username, action, timestamp }, ...history],
       };
     });
   };

@@ -70,7 +70,7 @@ const userCheck = async (username: string, tableId: string) => {
       ordered: [],
       totalSpending: 0,
     });
-    table.history.push({
+    table.history.unshift({
       username,
       action: "Joined the table",
       timestamp: new Date(),
@@ -97,7 +97,7 @@ const createOrder = async (
     timestamp: new Date(),
   };
   table.orders.push(orderTemplate);
-  table.history.push({
+  table.history.unshift({
     username,
     action: `Created an order: ${orderData.orderName}`,
     timestamp: new Date(),
@@ -129,7 +129,7 @@ const addOrderToUser = async (
   });
   user.totalSpending += orderData.price;
   table.totalSpending += orderData.price;
-  table.history.push({
+  table.history.unshift({
     username,
     action: `Added an order: ${orderData.orderName}`,
     timestamp: new Date(),
@@ -156,7 +156,7 @@ const deleteOrder = async (
   table.orders = table.orders.filter(
     (ord: TableOrder) => ord._id.toString() !== orderId
   );
-  table.history.push({
+  table.history.unshift({
     username,
     action: `Deleted an order: ${order.orderName}`,
     timestamp: new Date(),
@@ -188,7 +188,7 @@ const deleteOrderFromUser = async (
   if (userOrder) {
     user.totalSpending -= userOrder.price;
     table.totalSpending -= userOrder.price;
-    table.history.push({
+    table.history.unshift({
       username,
       action: `Deleted an order: ${userOrder.orderName}`,
       timestamp: new Date(),
