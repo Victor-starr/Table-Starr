@@ -104,6 +104,7 @@ export default function useTableData({ tableId }: UseTableDataProps) {
       stopLoading();
     }
   };
+
   return {
     loading,
     error,

@@ -19,6 +19,9 @@ html {
 .bg-op-50 {
   background-color: rgba(65, 65, 65, 0.301) !important;
 }
+.bg-op-70 {
+  background-color: rgba(0, 0, 0, 0.685) !important;
+}
 
 /* Override pixel-retroui heading styles */
 h1 {

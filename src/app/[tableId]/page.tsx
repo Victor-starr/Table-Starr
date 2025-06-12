@@ -9,11 +9,27 @@ import UserListSection from "@/components/UserListSection";
 import OrderListSection from "@/components/OrderList.Section";
 import { useState } from "react";
 import useOrder from "@/hooks/useOrder";
+import DeleteComfirm from "@/components/DeleteConfirm";
+import { TableOrder } from "@/lib/types";
 
+type deleteTargetType =
+  | {
+      type: "order";
+      order: TableOrder;
+    }
+  | {
+      type: "userOrder";
+      username: string;
+      orderId: string;
+    };
 export default function TablePage() {
   const [toggleOrderList, setToggleOrderList] = useState(true);
   const [historySection, setHistorySection] = useState<boolean>(false);
   const [userListSection, setUserListSection] = useState<boolean>(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<boolean>(false);
+  const [deleteTarget, setDeleteTarget] = useState<deleteTargetType | null>(
+    null
+  );
   const { tableId } = useParams();
   const {
     loading,
@@ -48,6 +64,20 @@ export default function TablePage() {
   const toggleUserListSection = () => {
     setUserListSection((prev) => !prev);
     setHistorySection(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === "order") {
+      await handleOrderDelete(deleteTarget.order);
+    } else if (deleteTarget.type === "userOrder") {
+      await handleDeleteOrderFromUser(
+        deleteTarget.username,
+        deleteTarget.orderId
+      );
+    }
+    setDeleteConfirm(false);
+    setDeleteTarget(null);
   };
 
   if (!username) {
@@ -90,7 +120,15 @@ export default function TablePage() {
         historyLogHandler={toggleHistorySection}
         userListHandler={toggleUserListSection}
       />
-
+      {deleteConfirm && (
+        <DeleteComfirm
+          onCancel={() => {
+            setDeleteConfirm(false);
+            setDeleteTarget(null);
+          }}
+          onDelete={handleDeleteConfirm}
+        />
+      )}
       <h3 className="mt-custom-28 text-primary text-center">
         {tableData ? (
           <>
@@ -161,7 +199,11 @@ export default function TablePage() {
                 orderList={orderList}
                 activeOrder={activeOrder}
                 onOrderClick={handleOrderClick}
-                onOrderDelete={handleOrderDelete}
+                // Instead of calling handleOrderDelete directly, open confirm dialog
+                onOrderDelete={(order) => {
+                  setDeleteTarget({ type: "order", order });
+                  setDeleteConfirm(true);
+                }}
               />
             )}
           </Card>
@@ -175,7 +217,11 @@ export default function TablePage() {
           userList={tableData.usersList}
           onUserClick={handleUserClick}
           activeUser={activeUser}
-          onDeleteOrderFromUser={handleDeleteOrderFromUser}
+          // Instead of calling handleDeleteOrderFromUser directly, open confirm dialog
+          onDeleteOrderFromUser={(username, orderId) => {
+            setDeleteTarget({ type: "userOrder", username, orderId });
+            setDeleteConfirm(true);
+          }}
         />
       )}
     </section>
