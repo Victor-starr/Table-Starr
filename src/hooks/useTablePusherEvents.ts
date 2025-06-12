@@ -55,11 +55,13 @@ export function useTablePusherEvents(
     channel.bind("order-deleted", handlerOrderDeleted);
     channel.bind("order-add", fetchTableData);
     channel.bind("table-user-order-deleted", fetchTableData);
+    channel.bind("joined-user", fetchTableData);
     return () => {
       channel.unbind("order-created", handlerNewOrder);
       channel.unbind("order-deleted", handlerOrderDeleted);
       channel.unbind("order-add", fetchTableData);
       channel.unbind("table-user-order-deleted", fetchTableData);
+      channel.unbind("joined-user", fetchTableData);
       pusherClient.unsubscribe(`table-${tableId}`);
     };
   }, [tableId, fetchTableData]);

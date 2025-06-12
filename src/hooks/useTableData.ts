@@ -26,8 +26,8 @@ export default function useTableData({ tableId }: UseTableDataProps) {
           username: storedUsername,
           tableId,
         });
-        setTableData(res.data.userCheck);
-        setOrderList(res.data.userCheck.orders || []);
+        setTableData(res.data.table);
+        setOrderList(res.data.table.orders || []);
       } catch (err) {
         setErrorMessage((err as ServerErrorMessage).data.error);
         showNotification(err as ServerErrorMessage);
