@@ -2,15 +2,22 @@ import { useRouter } from "next/navigation";
 import { Button } from "pixel-retroui";
 import { IoMdClose } from "react-icons/io";
 import { FaHistory, FaShare, FaUser } from "react-icons/fa";
+// import { LuLoaderPinwheel } from "react-icons/lu";
 import { useContext } from "react";
 import { NotificationContext } from "@/context/NotificationContext";
 interface NavProps {
   navigate: string;
+  // wheelPage?: string;
   historyLogHandler?: () => void;
   userListHandler?: () => void;
 }
 
-const Nav = ({ navigate, historyLogHandler, userListHandler }: NavProps) => {
+const Nav = ({
+  navigate,
+  historyLogHandler,
+  userListHandler,
+}: // wheelPage,
+NavProps) => {
   const router = useRouter();
   const { showNotification } = useContext(NotificationContext);
 
@@ -73,6 +80,17 @@ const Nav = ({ navigate, historyLogHandler, userListHandler }: NavProps) => {
           >
             <FaHistory className="size-7 cursor-pointer" />
           </Button>
+          {/* <Button
+            onClick={() => {
+              if (wheelPage) router.push(wheelPage);
+            }}
+            bg="#ff9500"
+            textColor="#ffffff"
+            borderColor="#000000"
+            shadow="#9e5c00"
+          >
+            <LuLoaderPinwheel className="size-7 cursor-pointer" />
+          </Button> */}
           <Button
             onClick={shareTableLink}
             bg="#007bff"

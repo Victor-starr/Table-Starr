@@ -119,6 +119,8 @@ export default function TablePage() {
         navigate="/tables-list"
         historyLogHandler={toggleHistorySection}
         userListHandler={toggleUserListSection}
+        // DISABLED WHEEL PAGE FOR NOW
+        // wheelPage={`/${tableId}/wheel`}
       />
       {deleteConfirm && (
         <DeleteComfirm
