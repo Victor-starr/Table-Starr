@@ -119,8 +119,7 @@ export default function TablePage() {
         navigate="/tables-list"
         historyLogHandler={toggleHistorySection}
         userListHandler={toggleUserListSection}
-        // DISABLED WHEEL PAGE FOR NOW
-        // wheelPage={`/${tableId}/wheel`}
+        wheelPage={`/${tableId}/wheel`}
       />
       {deleteConfirm && (
         <DeleteComfirm
@@ -201,7 +200,6 @@ export default function TablePage() {
                 orderList={orderList}
                 activeOrder={activeOrder}
                 onOrderClick={handleOrderClick}
-                // Instead of calling handleOrderDelete directly, open confirm dialog
                 onOrderDelete={(order) => {
                   setDeleteTarget({ type: "order", order });
                   setDeleteConfirm(true);
@@ -219,7 +217,6 @@ export default function TablePage() {
           userList={tableData.usersList}
           onUserClick={handleUserClick}
           activeUser={activeUser}
-          // Instead of calling handleDeleteOrderFromUser directly, open confirm dialog
           onDeleteOrderFromUser={(username, orderId) => {
             setDeleteTarget({ type: "userOrder", username, orderId });
             setDeleteConfirm(true);
