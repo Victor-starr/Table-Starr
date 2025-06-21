@@ -42,7 +42,7 @@ const Notification = () => {
   };
 
   return (
-    <div className="top-20 right-5 z-101 fixed flex flex-col items-end gap-1">
+    <div className="top-20 right-5 z-101 fixed flex flex-col items-end gap-1 max-w-md">
       {notifications.map((n) => {
         const { bg, textColor, borderColor, emoji } = getBubbleStyle(n.status);
         return (

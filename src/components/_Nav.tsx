@@ -60,8 +60,8 @@ const Nav = ({
       >
         <IoMdClose className="size-7 cursor-pointer" />
       </Button>
-      {historyLogHandler && (
-        <span>
+      <span>
+        {userListHandler && (
           <Button
             onClick={userListHandler}
             bg="#6c47d1"
@@ -71,18 +71,23 @@ const Nav = ({
           >
             <FaUser className="size-7 cursor-pointer" />
           </Button>
-          <Button
-            onClick={historyLogHandler}
-            bg="#ffca3a"
-            textColor="white"
-            borderColor="black"
-            shadow="#a83b00"
-          >
-            <FaHistory className="size-7 cursor-pointer" />
-          </Button>
+        )}
+
+        {/* {historyLogHandler && ( */}
+        <Button
+          onClick={historyLogHandler}
+          bg="#ffca3a"
+          textColor="white"
+          borderColor="black"
+          shadow="#a83b00"
+        >
+          <FaHistory className="size-7 cursor-pointer" />
+        </Button>
+        {/* )} */}
+        {wheelPage && (
           <Button
             onClick={() => {
-              if (wheelPage) router.push(wheelPage);
+              router.push(wheelPage);
             }}
             bg="#ff9500"
             textColor="#ffffff"
@@ -91,17 +96,17 @@ const Nav = ({
           >
             <LuLoaderPinwheel className="size-7 cursor-pointer" />
           </Button>
-          <Button
-            onClick={shareTableLink}
-            bg="#007bff"
-            textColor="#ffffff"
-            borderColor="#000000"
-            shadow="#0210cf"
-          >
-            <FaShare className="size-7 cursor-pointer" />
-          </Button>
-        </span>
-      )}
+        )}
+        <Button
+          onClick={shareTableLink}
+          bg="#007bff"
+          textColor="#ffffff"
+          borderColor="#000000"
+          shadow="#0210cf"
+        >
+          <FaShare className="size-7 cursor-pointer" />
+        </Button>
+      </span>
     </nav>
   );
 };
