@@ -198,6 +198,35 @@ const deleteOrderFromUser = async (
   return user;
 };
 
+const acceptedChallange = async (
+  tableId: string,
+  username: string,
+  challange: { status: boolean; message: string }
+) => {
+  await connectToDB();
+  const table = await Table.findById(tableId);
+  if (!table) throw new Error("Table not found");
+  const user = table.usersList.find((user: User) => user.username === username);
+  if (!user) throw new Error("User not found in the table");
+
+  if (challange.status) {
+    table.history.unshift({
+      username,
+      action: `Accepted the challenge: ${challange.message}`,
+      timestamp: new Date(),
+    });
+  } else {
+    table.history.unshift({
+      username,
+      action: `Declined the challenge: ${challange.message}`,
+      timestamp: new Date(),
+    });
+
+    await table.save();
+    return table;
+  }
+};
+
 const tableServices = {
   createTable,
   allTables,
@@ -208,6 +237,7 @@ const tableServices = {
   addOrderToUser,
   deleteOrder,
   deleteOrderFromUser,
+  acceptedChallange,
 };
 
 export default tableServices;
