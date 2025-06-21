@@ -1,6 +1,7 @@
 import tableServices from "@/services/tableServices";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { NextRequest } from "next/server";
+import { pusherServer } from "@/lib/pusherServer";
 
 export async function POST(req: NextRequest) {
   const { tableId, username, challange } = await req.json();
@@ -21,6 +22,7 @@ export async function POST(req: NextRequest) {
         responseMessage = `Challenge declined=> ${challange.message} ❌`;
         break;
     }
+    await pusherServer.trigger(`table-${tableId}`, "wheel-spinned", {});
     return Response.json(
       { message: responseMessage, tableData },
       { status: 200 }
