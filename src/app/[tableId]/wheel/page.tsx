@@ -3,9 +3,10 @@ import WheelSection from "@/components/WheelSection";
 import Nav from "@/components/_Nav";
 import useTableData from "@/hooks/useTableData";
 import { User } from "@/lib/types";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Button, Card } from "pixel-retroui";
 import { useState } from "react";
+import HistorySection from "@/components/HistorySection";
 
 export default function TableWheelPage() {
   const { tableId } = useParams();
@@ -15,6 +16,7 @@ export default function TableWheelPage() {
   });
   const [isSpinning, setIsSpinning] = useState(false);
   const [displayedUser, setDisplayedUser] = useState<User | null>(null);
+  const [showHistoryList, setShowHistoryList] = useState(false);
 
   const pickRandomUser = () => {
     if (!tableData || tableData.usersList.length === 0) {
@@ -49,13 +51,12 @@ export default function TableWheelPage() {
     return <WheelLoadingPage />;
   }
 
-  if (tableData.usersList.length < 4) {
-    return <Wheel404Page tableId={tableId as string} />;
-  }
-
   return (
     <section className="relative flex flex-col items-center px-15 w-full h-full text-black">
-      <Nav navigate={`/${tableId}`} />
+      <Nav
+        navigate={`/${tableId}`}
+        historyLogHandler={() => setShowHistoryList((prev) => !prev)}
+      />
       <h3 className="mt-custom-28 text-primary">Wheel of Fortune</h3>
       <h5 className="w-full text-thirdary">The User Who is spinning</h5>
       <Card
@@ -83,7 +84,11 @@ export default function TableWheelPage() {
           {isSpinning ? "Spinning..." : "Click"}
         </Button>
       </Card>
-      <WheelSection userWinner={userWinner?.username || ""} />
+      {showHistoryList ? (
+        <HistorySection tableData={tableData} />
+      ) : (
+        <WheelSection userWinner={userWinner?.username || ""} />
+      )}
     </section>
   );
 }
@@ -92,25 +97,6 @@ const WheelLoadingPage = () => {
   return (
     <section className="flex flex-col justify-center items-center w-full h-full text-black text-center">
       <h1 className="w-full text-thirdary">Loading...</h1>
-    </section>
-  );
-};
-
-const Wheel404Page = (prop: { tableId: string }) => {
-  const router = useRouter();
-
-  return (
-    <section className="flex flex-col justify-center items-center w-full h-full text-black text-center">
-      <h2 className="text-primary">Wheel of Fortune</h2>
-      <h5 className="w-full text-thirdary">Table not found</h5>
-      <Button
-        onClick={() => router.push(`/${prop.tableId}`)}
-        bg={"#335cff"}
-        textColor={"#d1daff"}
-        shadow={"#3900bd"}
-      >
-        Go Back
-      </Button>
     </section>
   );
 };
