@@ -3,8 +3,9 @@ import { Button } from "pixel-retroui";
 import { IoMdClose } from "react-icons/io";
 import { FaHistory, FaShare, FaUser } from "react-icons/fa";
 import { LuLoaderPinwheel } from "react-icons/lu";
-import { useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { NotificationContext } from "@/context/NotificationContext";
+import { useTableContext } from "@/context/TableContext";
 interface NavProps {
   navigate: string;
   wheelPage?: string;
@@ -19,7 +20,17 @@ const Nav = ({
   wheelPage,
 }: NavProps) => {
   const router = useRouter();
+  const { tableData } = useTableContext();
   const { showNotification } = useContext(NotificationContext);
+  const [wheelPageAvb, setWheelPageAvb] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (tableData && tableData.usersList && tableData.usersList.length >= 4) {
+      setWheelPageAvb(true);
+    } else {
+      setWheelPageAvb(false);
+    }
+  }, [tableData]);
 
   const returnHomePage = () => {
     switch (navigate) {
@@ -32,6 +43,17 @@ const Nav = ({
         break;
     }
     router.push(navigate);
+  };
+
+  const wheelPageHandler = () => {
+    if (!wheelPageAvb) {
+      showNotification({
+        message: "You don't have enough people to spin the wheel (min 4)",
+        status: NaN,
+      });
+      return;
+    }
+    router.push(wheelPage as string);
   };
 
   const shareTableLink = () => {
@@ -73,30 +95,30 @@ const Nav = ({
           </Button>
         )}
 
-        {/* {historyLogHandler && ( */}
-        <Button
-          onClick={historyLogHandler}
-          bg="#ffca3a"
-          textColor="white"
-          borderColor="black"
-          shadow="#a83b00"
-        >
-          <FaHistory className="size-7 cursor-pointer" />
-        </Button>
-        {/* )} */}
+        {historyLogHandler && (
+          <Button
+            onClick={historyLogHandler}
+            bg="#ffca3a"
+            textColor="white"
+            borderColor="black"
+            shadow="#a83b00"
+          >
+            <FaHistory className="size-7 cursor-pointer" />
+          </Button>
+        )}
+
         {wheelPage && (
           <Button
-            onClick={() => {
-              router.push(wheelPage);
-            }}
-            bg="#ff9500"
-            textColor="#ffffff"
+            onClick={wheelPageHandler}
+            bg={wheelPageAvb ? "#ff9500" : "#cccccc"}
+            textColor={wheelPageAvb ? "#ffffff" : "#000000"}
             borderColor="#000000"
-            shadow="#9e5c00"
+            shadow={wheelPageAvb ? "#9e5c00" : "#888888"}
           >
             <LuLoaderPinwheel className="size-7 cursor-pointer" />
           </Button>
         )}
+
         <Button
           onClick={shareTableLink}
           bg="#007bff"

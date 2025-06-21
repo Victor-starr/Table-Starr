@@ -1,29 +1,29 @@
 "use client";
 import { pusherClient } from "@/lib/pusherClient";
-import { Table, TableOrder } from "@/lib/types";
-import { useEffect, useState } from "react";
+import { useEffect, useCallback } from "react";
+import { TableOrder } from "@/lib/types";
+import { useTableContext } from "@/context/TableContext";
 
 export function useTablePusherEvents(
   tableId: string,
   fetchTableData: () => Promise<void>
 ) {
-  const [tableData, setTableData] = useState<Table | null>(null);
-  const [orderList, setOrderList] = useState<TableOrder[]>([]);
+  const { tableData, setTableData, orderList, setOrderList } =
+    useTableContext();
 
-  const updateHistorytable = (
-    username: string,
-    action: string,
-    timestamp: Date
-  ) => {
-    setTableData((prevTable) => {
-      if (!prevTable) return prevTable;
-      const history = prevTable.history || [];
-      return {
-        ...prevTable,
-        history: [{ username, action, timestamp }, ...history],
-      };
-    });
-  };
+  const updateHistorytable = useCallback(
+    (username: string, action: string, timestamp: Date) => {
+      setTableData((prevTable) => {
+        if (!prevTable) return prevTable;
+        const history = prevTable.history || [];
+        return {
+          ...prevTable,
+          history: [{ username, action, timestamp }, ...history],
+        };
+      });
+    },
+    [setTableData]
+  );
 
   useEffect(() => {
     const channel = pusherClient.subscribe(`table-${tableId}`);
@@ -64,7 +64,7 @@ export function useTablePusherEvents(
       channel.unbind("joined-user", fetchTableData);
       pusherClient.unsubscribe(`table-${tableId}`);
     };
-  }, [tableId, fetchTableData]);
+  }, [tableId, fetchTableData, setOrderList, updateHistorytable]);
 
   return {
     tableData,

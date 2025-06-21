@@ -4,7 +4,7 @@ import axios from "axios";
 import { ServerErrorMessage } from "@/lib/types";
 import { NotificationContext } from "@/context/NotificationContext";
 import { useUserExp } from "./useUserExp";
-import { useTablePusherEvents } from "./useTablePusherEvents";
+import { useTableContext } from "@/context/TableContext";
 
 interface UseTableDataProps {
   tableId: string;
@@ -15,6 +15,8 @@ export default function useTableData({ tableId }: UseTableDataProps) {
   const { startLoading, stopLoading, setErrorMessage, loading, error } =
     useUserExp();
   const [username, setUsername] = useState<string | null>(null);
+  const { tableData, setTableData, orderList, setOrderList } =
+    useTableContext();
 
   const fetchUserData = async () => {
     const storedUsername = localStorage.getItem("username");
@@ -52,8 +54,6 @@ export default function useTableData({ tableId }: UseTableDataProps) {
       stopLoading();
     }
   };
-  const { orderList, setOrderList, tableData, setTableData } =
-    useTablePusherEvents(tableId, fetchTableData);
 
   useEffect(() => {
     fetchUserData();
