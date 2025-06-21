@@ -15,10 +15,10 @@ export async function POST(req: NextRequest) {
 
     switch (challange.status) {
       case true:
-        responseMessage = `User ${username} accepted the challenge: ${challange.message} 🎉`;
+        responseMessage = `Challenge accepted => ${challange.message} 🎉`;
         break;
       case false:
-        responseMessage = `User ${username} declined the challenge: ${challange.message} ❌`;
+        responseMessage = `Challenge declined=> ${challange.message} ❌`;
         break;
     }
     return Response.json(

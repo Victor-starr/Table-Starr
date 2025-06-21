@@ -208,17 +208,17 @@ const acceptedChallange = async (
   if (!table) throw new Error("Table not found");
   const user = table.usersList.find((user: User) => user.username === username);
   if (!user) throw new Error("User not found in the table");
-
+  const action = challange.message.split(": ").pop();
   if (challange.status) {
     table.history.unshift({
       username,
-      action: `Accepted the challenge: ${challange.message}`,
+      action: action,
       timestamp: new Date(),
     });
   } else {
     table.history.unshift({
       username,
-      action: `Declined the challenge: ${challange.message}`,
+      action: action,
       timestamp: new Date(),
     });
 
