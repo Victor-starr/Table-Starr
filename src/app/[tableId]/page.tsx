@@ -209,12 +209,11 @@ export default function TablePage() {
           </Card>
         </>
       ) : (
-        tableData && <HistorySection tableData={tableData} />
+        <HistorySection />
       )}
 
       {userListSection && tableData && (
         <UserListSection
-          userList={tableData.usersList}
           onUserClick={handleUserClick}
           activeUser={activeUser}
           onDeleteOrderFromUser={(username, orderId) => {

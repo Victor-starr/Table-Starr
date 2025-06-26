@@ -7,19 +7,30 @@ import {
 } from "pixel-retroui";
 import { User } from "@/lib/types";
 import { FaTrashAlt } from "react-icons/fa";
+import { useTableContext } from "@/context/TableContext";
+
 interface UserListSectionProps {
-  userList: User[];
   onUserClick: (user: User) => void;
   activeUser: User | null;
   onDeleteOrderFromUser: (username: string, orderId: string) => void;
 }
 function UserListSection({
-  userList,
   onUserClick,
   activeUser,
   onDeleteOrderFromUser,
 }: UserListSectionProps) {
-  const uniqueUsers = userList.filter(
+  const { tableData } = useTableContext();
+
+  if (!tableData) {
+    return (
+      <div className="mt-4">
+        <h2 className="mb-4">User List</h2>
+        <p>Loading users...</p>
+      </div>
+    );
+  }
+
+  const uniqueUsers = tableData.usersList.filter(
     (user, index, self) =>
       index === self.findIndex((u) => u.username === user.username)
   );

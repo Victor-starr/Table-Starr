@@ -85,7 +85,7 @@ export default function TableWheelPage() {
         </Button>
       </Card>
       {showHistoryList ? (
-        <HistorySection tableData={tableData} />
+        <HistorySection />
       ) : (
         <WheelSection userWinner={userWinner?.username || ""} />
       )}

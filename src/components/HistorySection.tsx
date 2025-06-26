@@ -4,13 +4,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "pixel-retroui";
-import { Table } from "@/lib/types";
 import { timeAgo } from "@/utils/Time";
+import { useTableContext } from "@/context/TableContext";
 
-type HistorySectionProps = {
-  tableData: Table;
-};
-const HistorySection = ({ tableData }: HistorySectionProps) => {
+const HistorySection = () => {
+  const { tableData } = useTableContext();
+
+  if (!tableData) {
+    return (
+      <div className="mt-4">
+        <h2 className="mb-4">History</h2>
+        <p>Loading history...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="mt-4">
       <h2 className="mb-4">History</h2>
