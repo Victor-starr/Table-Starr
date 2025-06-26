@@ -65,19 +65,21 @@ const userCheck = async (username: string, tableId: string) => {
   );
 
   if (!userExists) {
+    const historyEntry = {
+      username,
+      action: "Joined the table",
+      timestamp: new Date(),
+    };
     table.usersList.push({
       username,
       ordered: [],
       totalSpending: 0,
     });
-    table.history.unshift({
-      username,
-      action: "Joined the table",
-      timestamp: new Date(),
-    });
+    table.history.unshift(historyEntry);
     await table.save();
+    return { table, historyEntry, isNewUser: true };
   }
-  return table;
+  return { table, historyEntry: null, isNewUser: false };
 };
 
 const createOrder = async (
@@ -97,15 +99,17 @@ const createOrder = async (
     timestamp: new Date(),
   };
   table.orders.push(orderTemplate);
-  table.history.unshift({
+
+  const historyEntry = {
     username,
     action: `Created an order: ${orderData.orderName}`,
     timestamp: new Date(),
-  });
+  };
+  table.history.unshift(historyEntry);
   await table.save();
 
   const newOrder = table.orders[table.orders.length - 1];
-  return newOrder;
+  return { order: newOrder, historyEntry };
 };
 
 const addOrderToUser = async (
@@ -129,13 +133,15 @@ const addOrderToUser = async (
   });
   user.totalSpending += orderData.price;
   table.totalSpending += orderData.price;
-  table.history.unshift({
+
+  const historyEntry = {
     username,
     action: `Added an order: ${orderData.orderName}`,
     timestamp: new Date(),
-  });
+  };
+  table.history.unshift(historyEntry);
   await table.save();
-  return user;
+  return { user, historyEntry };
 };
 const deleteOrder = async (
   username: string,
@@ -156,13 +162,15 @@ const deleteOrder = async (
   table.orders = table.orders.filter(
     (ord: TableOrder) => ord._id.toString() !== orderId
   );
-  table.history.unshift({
+
+  const historyEntry = {
     username,
     action: `Deleted an order: ${order.orderName}`,
     timestamp: new Date(),
-  });
+  };
+  table.history.unshift(historyEntry);
   table.save();
-  return order;
+  return { order, historyEntry };
 };
 
 const deleteOrderFromUser = async (
@@ -185,17 +193,20 @@ const deleteOrderFromUser = async (
   user.ordered = user.ordered.filter(
     (ord: TableOrder) => ord._id.toString() !== orderId
   );
+
+  let historyEntry = null;
   if (userOrder) {
     user.totalSpending -= userOrder.price;
     table.totalSpending -= userOrder.price;
-    table.history.unshift({
+    historyEntry = {
       username,
       action: `Deleted an order: ${userOrder.orderName}`,
       timestamp: new Date(),
-    });
+    };
+    table.history.unshift(historyEntry);
   }
   await table.save();
-  return user;
+  return { user, historyEntry };
 };
 
 const acceptedChallange = async (
@@ -208,23 +219,16 @@ const acceptedChallange = async (
   if (!table) throw new Error("Table not found");
   const user = table.usersList.find((user: User) => user.username === username);
   if (!user) throw new Error("User not found in the table");
-  const action = challange.message.split(": ").pop();
-  if (challange.status) {
-    table.history.unshift({
-      username,
-      action: action,
-      timestamp: new Date(),
-    });
-  } else {
-    table.history.unshift({
-      username,
-      action: action,
-      timestamp: new Date(),
-    });
 
-    await table.save();
-    return table;
-  }
+  const historyEntry = {
+    username,
+    action: challange.message.split(": ").pop(),
+    timestamp: new Date(),
+  };
+
+  table.history.unshift(historyEntry);
+  await table.save();
+  return { table, historyEntry };
 };
 
 const tableServices = {

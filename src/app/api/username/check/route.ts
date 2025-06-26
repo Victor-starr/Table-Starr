@@ -6,10 +6,18 @@ import { pusherServer } from "@/lib/pusherServer";
 export async function POST(req: NextRequest) {
   const { username, tableId } = await req.json();
   try {
-    const table = await tableServices.userCheck(username, tableId);
-    await pusherServer.trigger(`table-${tableId}`, "joined-user", {
-      table,
-    });
+    const { table, historyEntry, isNewUser } = await tableServices.userCheck(
+      username,
+      tableId
+    );
+
+    if (isNewUser) {
+      await pusherServer.trigger(`table-${tableId}`, "user-joined", {
+        historyEntry,
+        usersList: table.usersList,
+      });
+    }
+
     return Response.json(
       { message: "User checked successfully", table },
       { status: 200 }

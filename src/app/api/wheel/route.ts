@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   const { tableId, username, challange } = await req.json();
 
   try {
-    const tableData = await tableServices.acceptedChallange(
+    const { table, historyEntry } = await tableServices.acceptedChallange(
       tableId,
       username,
       challange
@@ -22,9 +22,14 @@ export async function POST(req: NextRequest) {
         responseMessage = `Challenge declined=> ${challange.message} ❌`;
         break;
     }
-    await pusherServer.trigger(`table-${tableId}`, "wheel-spinned", {});
+
+    await pusherServer.trigger(`table-${tableId}`, "wheel-challenge-result", {
+      historyEntry,
+      history: table.history,
+    });
+
     return Response.json(
-      { message: responseMessage, tableData },
+      { message: responseMessage, tableData: table },
       { status: 200 }
     );
   } catch (error) {

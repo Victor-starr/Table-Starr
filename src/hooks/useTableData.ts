@@ -5,6 +5,7 @@ import { ServerErrorMessage } from "@/lib/types";
 import { NotificationContext } from "@/context/NotificationContext";
 import { useUserExp } from "./useUserExp";
 import { useTableContext } from "@/context/TableContext";
+import { useTablePusherEvents } from "./useTablePusherEvents";
 
 interface UseTableDataProps {
   tableId: string;
@@ -54,6 +55,8 @@ export default function useTableData({ tableId }: UseTableDataProps) {
       stopLoading();
     }
   };
+
+  useTablePusherEvents(tableId, fetchTableData);
 
   useEffect(() => {
     fetchUserData();
