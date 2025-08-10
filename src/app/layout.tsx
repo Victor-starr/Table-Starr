@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import NotificationProvider from "@/context/NotificationProvider";
 import Notification from "@/components/Notification";
 import { TableProvider } from "@/context/TableContext";
+import GithubLink from "@/components/GithubLink";
 
 export const metadata: Metadata = {
   title: "Table Starr ⭐",
@@ -24,6 +25,7 @@ export default function RootLayout({
           <TableProvider>
             <main className="flex flex-col justify-center items-center bg-background rounded-xl w-[450px] h-full overflow-y-scroll">
               {children}
+              <GithubLink />
             </main>
           </TableProvider>
         </NotificationProvider>
