@@ -1,15 +1,16 @@
 "use client";
 import { Input, Button } from "pixel-retroui";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function HomeCreate() {
   const router = useRouter();
+  const [username, setUsername] = useState<string>("");
   const tableConnectionHandler = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
 
-    const username = e.currentTarget.username.value;
     localStorage.setItem("username", username);
     router.push("/tables-list");
   };
@@ -27,6 +28,8 @@ export default function HomeCreate() {
           required
           className="w-full"
           type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <div className="flex gap-2">
           <Button type="submit" className="flex-1">
