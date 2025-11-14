@@ -1,19 +1,24 @@
 import { Button, Card } from "pixel-retroui";
 interface DeleteConfirmProps {
+  title?: string;
+  message?: string;
   onCancel: () => void;
   onDelete: () => void;
 }
-const DeleteConfirm = ({ onCancel, onDelete }: DeleteConfirmProps) => {
+const DeleteConfirm = ({
+  title = "Confirm Deletion",
+  message = "Are you sure you want to delete?",
+  onCancel,
+  onDelete,
+}: DeleteConfirmProps) => {
   return (
     <section className="z-50 fixed inset-0 flex justify-center items-center bg-op-70">
       <Card
         bg="#fff"
         className="flex flex-col justify-center items-center shadow-2xl rounded-xl w-full max-w-md"
       >
-        <h1 className="text-gray-900 text-2xl">Confirm Deletion</h1>
-        <p className="mb-5 text-gray-600 text-center">
-          Are you sure you want to delete?
-        </p>
+        <h1 className="text-gray-900 text-2xl">{title}</h1>
+        <p className="mb-5 text-gray-600 text-center">{message}</p>
         <div className="flex gap-4 w-full">
           <Button
             onClick={onCancel}
