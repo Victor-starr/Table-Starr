@@ -6,18 +6,28 @@ import {
   Button,
 } from "pixel-retroui";
 import { User } from "@/lib/types";
-import { FaTrashAlt } from "react-icons/fa";
 import { useTableContext } from "@/context/TableContext";
+import { FaTrashAlt } from "react-icons/fa";
+import { FaUserAltSlash } from "react-icons/fa";
 
 interface UserListSectionProps {
   onUserClick: (user: User) => void;
+
   activeUser: User | null;
+  isOwner?: boolean;
   onDeleteOrderFromUser: (username: string, orderId: string) => void;
+  onDeleteUserFromTable: (
+    requestingUsername: string,
+    targetUsername: string,
+    tableId: string
+  ) => void;
 }
 function UserListSection({
   onUserClick,
   activeUser,
+  isOwner,
   onDeleteOrderFromUser,
+  onDeleteUserFromTable,
 }: UserListSectionProps) {
   const { tableData } = useTableContext();
 
@@ -51,6 +61,23 @@ function UserListSection({
               >
                 {user.username} - {user.totalSpending}$
               </p>
+              {isOwner && user.username !== tableData.createdBy && (
+                <Button
+                  bg="red"
+                  textColor="white"
+                  className="flex justify-center items-center ml-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDeleteUserFromTable(
+                      tableData.createdBy,
+                      user.username,
+                      tableData._id
+                    );
+                  }}
+                >
+                  <FaUserAltSlash />
+                </Button>
+              )}
             </AccordionTrigger>
             <AccordionContent>
               {user.ordered.length > 0 ? (
@@ -67,9 +94,10 @@ function UserListSection({
                         bg="red"
                         textColor="white"
                         className="flex justify-center items-center"
-                        onClick={() =>
-                          onDeleteOrderFromUser(user.username, order._id)
-                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteOrderFromUser(user.username, order._id);
+                        }}
                       >
                         <FaTrashAlt className="text-lg" />
                       </Button>
