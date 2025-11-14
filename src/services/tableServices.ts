@@ -173,6 +173,42 @@ const deleteOrder = async (
   return { order, historyEntry };
 };
 
+const deleteUserFromTable = async (
+  requestingUsername: string,
+  targetUsername: string,
+  tableId: string
+) => {
+  await connectToDB();
+  const table = await Table.findById(tableId);
+  if (!table) {
+    throw new Error("Table not found");
+  }
+  if (requestingUsername !== table.createdBy) {
+    throw new Error("Only the table creator can delete users");
+  }
+  const userIndex = table.usersList.findIndex(
+    (user: User) => user.username === targetUsername
+  );
+  if (userIndex === -1) {
+    throw new Error("User not found in the table");
+  }
+  // Remove user orders from the table orders
+  const user = table.usersList[userIndex];
+  const userTotalSpending = user.totalSpending;
+  // Remove user from usersList
+  table.usersList.splice(userIndex, 1);
+  table.totalSpending -= userTotalSpending;
+  const historyEntry = {
+    username: requestingUsername,
+    action: `Removed user: ${targetUsername}`,
+    timestamp: new Date(),
+  };
+  table.history.unshift(historyEntry);
+
+  await table.save();
+  return { table, historyEntry };
+};
+
 const deleteOrderFromUser = async (
   username: string,
   tableId: string,
@@ -240,6 +276,7 @@ const tableServices = {
   createOrder,
   addOrderToUser,
   deleteOrder,
+  deleteUserFromTable,
   deleteOrderFromUser,
   acceptedChallange,
 };
