@@ -118,6 +118,36 @@ export function useTablePusherEvents(
       });
     };
 
+    const handlerUserDeletedFromTable = (data: {
+      requestingUsername: string;
+      targetUsername: string;
+      historyEntry: HistoryEntry;
+    }) => {
+      updateHistorytable(
+        data.historyEntry.username,
+        data.historyEntry.action,
+        new Date(data.historyEntry.timestamp)
+      );
+      // Remove the user from userList and fix the totalSpending of the table accordingly
+      setTableData((prevTable) => {
+        if (!prevTable) return prevTable;
+        const userToRemove = prevTable.usersList.find(
+          (user) => user.username === data.targetUsername
+        );
+        if (!userToRemove) return prevTable;
+        const updatedUsersList = prevTable.usersList.filter(
+          (user) => user.username !== data.targetUsername
+        );
+        const updatedTotalSpending =
+          prevTable.totalSpending - userToRemove.totalSpending;
+        return {
+          ...prevTable,
+          usersList: updatedUsersList,
+          totalSpending: updatedTotalSpending,
+        };
+      });
+    };
+
     const handlerWheelChallengeResult = (data: {
       historyEntry: HistoryEntry;
       history: HistoryEntry[];
@@ -134,6 +164,7 @@ export function useTablePusherEvents(
     channel.bind("table-user-order-deleted", handlerUserOrderDeleted);
     channel.bind("user-joined", handlerUserJoined);
     channel.bind("wheel-challenge-result", handlerWheelChallengeResult);
+    channel.bind("table-user-deleted", handlerUserDeletedFromTable);
 
     return () => {
       channel.unbind("order-created", handlerNewOrder);
@@ -142,6 +173,7 @@ export function useTablePusherEvents(
       channel.unbind("table-user-order-deleted", handlerUserOrderDeleted);
       channel.unbind("user-joined", handlerUserJoined);
       channel.unbind("wheel-challenge-result", handlerWheelChallengeResult);
+      channel.unbind("table-user-deleted", handlerUserDeletedFromTable);
       pusherClient.unsubscribe(`table-${tableId}`);
     };
   }, [tableId, fetchTableData, setOrderList, setTableData, updateHistorytable]);
