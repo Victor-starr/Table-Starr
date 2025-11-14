@@ -21,7 +21,14 @@ type deleteTargetType =
       type: "userOrder";
       username: string;
       orderId: string;
+    }
+  | {
+      type: "deleteUser";
+      requestingUsername: string;
+      targetUsername: string;
+      tableId: string;
     };
+
 export default function TablePage() {
   const [toggleOrderList, setToggleOrderList] = useState(true);
   const [historySection, setHistorySection] = useState<boolean>(false);
@@ -30,6 +37,10 @@ export default function TablePage() {
   const [deleteTarget, setDeleteTarget] = useState<deleteTargetType | null>(
     null
   );
+  const [deleteContext, setDeleteContext] = useState<{
+    title: string;
+    message: string;
+  }>({ title: "", message: "" });
   const { tableId } = useParams();
   const {
     loading,
@@ -40,6 +51,7 @@ export default function TablePage() {
     fetchTableData,
     handleUsernameSubmit,
     handleDeleteOrderFromUser,
+    delteUserFromTable,
   } = useTableData({
     tableId: tableId as string,
   });
@@ -74,6 +86,12 @@ export default function TablePage() {
       await handleDeleteOrderFromUser(
         deleteTarget.username,
         deleteTarget.orderId
+      );
+    } else if (deleteTarget.type === "deleteUser") {
+      await delteUserFromTable(
+        tableData?.createdBy as string,
+        deleteTarget.targetUsername,
+        tableId as string
       );
     }
     setDeleteConfirm(false);
@@ -123,6 +141,8 @@ export default function TablePage() {
       />
       {deleteConfirm && (
         <DeleteComfirm
+          title={deleteContext.title}
+          message={deleteContext.message}
           onCancel={() => {
             setDeleteConfirm(false);
             setDeleteTarget(null);
@@ -216,9 +236,31 @@ export default function TablePage() {
         <UserListSection
           onUserClick={handleUserClick}
           activeUser={activeUser}
+          isOwner={tableData.createdBy === username}
           onDeleteOrderFromUser={(username, orderId) => {
             setDeleteTarget({ type: "userOrder", username, orderId });
             setDeleteConfirm(true);
+            setDeleteContext({
+              title: "Delete User Order",
+              message: `Are you sure you want to delete order ${orderId} from user ${username}?`,
+            });
+          }}
+          onDeleteUserFromTable={(
+            requestingUsername,
+            targetUsername,
+            tableId
+          ) => {
+            setDeleteTarget({
+              type: "deleteUser",
+              requestingUsername,
+              targetUsername,
+              tableId,
+            });
+            setDeleteConfirm(true);
+            setDeleteContext({
+              title: "Delete User from Table",
+              message: `Are you sure you want to delete user ${targetUsername} from the table? This will also remove all their orders.`,
+            });
           }}
         />
       )}
