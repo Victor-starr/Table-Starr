@@ -1,5 +1,8 @@
 # Table-Starr
 
+>⚠️ **Warning:** This project uses a free-tier MongoDB cluster. If it hasn’t been used for a while, the cluster may shut down due to inactivity. If you want to try the project yourself, follow the setup steps below and feel free to change anything you like.
+
+
 Table-Starr helps you and your friends keep track of orders and split the bill easily—perfect for going out to eat or sharing expenses.
 
 ## Features
